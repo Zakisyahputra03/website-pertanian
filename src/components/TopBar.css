@@ -1,0 +1,160 @@
+.top-bar-aesthetic {
+    background: var(--primary-dark);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    /* Fixed at very top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1001;
+    color: white;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.top-bar-aesthetic.scrolled {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+.top-bar-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.top-bar-left,
+.top-bar-right {
+    display: flex;
+    align-items: center;
+}
+
+.lang-flags {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.flag-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 1px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    opacity: 0.6;
+}
+
+.flag-btn:hover,
+.flag-btn.active {
+    opacity: 1;
+    transform: scale(1.1);
+    background: transparent;
+}
+
+.flag-circle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+/* Standard flag styles using backgrounds */
+.id-flag {
+    background: linear-gradient(to bottom, #FF0000 50%, #FFFFFF 50%);
+}
+
+.en-flag {
+    background: #00247D;
+    position: relative;
+}
+
+/* Simplified English Flag (Union Jack Style) */
+.en-flag::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 3px;
+    background: white;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.en-flag::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 100%;
+    background: white;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Horizontal Red Cross */
+.en-flag-inner-h {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #E6273E;
+    transform: translateY(-50%);
+}
+
+.en-flag-inner-v {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: #E6273E;
+    transform: translateX(-50%);
+}
+
+.top-util-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.top-nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.top-nav-link:hover {
+    color: var(--accent);
+}
+
+.nav-separator {
+    opacity: 0.3;
+    font-weight: 200;
+    margin-top: -2px;
+}
+
+@media (max-width: 768px) {
+    .top-bar-aesthetic {
+        display: none;
+        /* Hide on small screens to save space */
+    }
+}

@@ -1,0 +1,196 @@
+.agenda-page {
+    padding-top: 120px;
+    background: #fdfdfd;
+    min-height: 100vh;
+}
+
+.agenda-header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+    padding: 5rem 0;
+    margin-bottom: 4rem;
+    border-radius: 0 0 60px 60px;
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.agenda-header h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.agenda-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem 5rem;
+}
+
+.agenda-grid {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 4rem;
+}
+
+.agenda-list-section h2 {
+    font-size: 2rem;
+    color: var(--primary-dark);
+    margin-bottom: 2rem;
+    font-weight: 800;
+}
+
+.agenda-card-detailed {
+    background: white;
+    border-radius: 32px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f1f5f9;
+    display: flex;
+    gap: 2.5rem;
+    transition: all 0.3s ease;
+}
+
+.agenda-card-detailed:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 60px rgba(27, 94, 32, 0.08);
+    border-color: var(--primary-light);
+}
+
+.date-badge-big {
+    width: 90px;
+    height: 90px;
+    background: var(--primary-ultra-light);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.date-badge-big .day {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.date-badge-big .month {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+}
+
+.agenda-info {
+    flex: 1;
+}
+
+.agenda-tag {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.agenda-info h3 {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    margin: 0 0 1rem;
+    font-weight: 800;
+    line-height: 1.4;
+}
+
+.agenda-details-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.detail-item svg {
+    color: var(--primary);
+}
+
+.agenda-sidebar-info {
+    position: sticky;
+    top: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.info-widget {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 32px;
+    border: 1px solid #f1f5f9;
+}
+
+.info-widget h4 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+    font-weight: 800;
+}
+
+.contact-link-pill {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem;
+    background: var(--primary-ultra-light);
+    border-radius: 20px;
+    text-decoration: none;
+    color: var(--primary-dark);
+    font-weight: 800;
+    transition: 0.3s;
+}
+
+.contact-link-pill:hover {
+    background: var(--primary);
+    color: white;
+}
+
+@media (max-width: 1024px) {
+    .agenda-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .agenda-sidebar-info {
+        position: static;
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .agenda-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .agenda-card-detailed {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 2rem;
+    }
+
+    .date-badge-big {
+        width: 80px;
+        height: 80px;
+    }
+}

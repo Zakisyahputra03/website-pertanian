@@ -1,0 +1,240 @@
+.data-premium-section {
+    padding: 100px 0;
+    background: white;
+}
+
+.data-header-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4rem;
+}
+
+.data-actions-premium {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.premium-select-wrap {
+    position: relative;
+    background: var(--bg-soft);
+    border-radius: 12px;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    color: var(--primary);
+}
+
+.premium-select {
+    background: transparent;
+    border: none;
+    font-weight: 700;
+    color: var(--text-main);
+    outline: none;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Lux Cards */
+.data-grid-lux {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.lux-data-card {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition-mid);
+}
+
+.lux-data-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-premium);
+}
+
+.lux-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.lux-icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emoji-icon {
+    font-size: 1.8rem;
+}
+
+.lux-trend-indicator {
+    padding: 0.4rem 0.8rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.lux-trend-indicator.up {
+    background: #E8F5E9;
+    color: #2E7D32;
+}
+
+.lux-trend-indicator.down {
+    background: #FFEBEE;
+    color: #D32F2F;
+}
+
+.lux-card-main {
+    margin-bottom: 2rem;
+}
+
+.lux-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.lux-value-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.lux-value {
+    font-size: 2.8rem;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-main);
+    line-height: 1;
+}
+
+.lux-unit {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.lux-card-footer {
+    margin-top: auto;
+}
+
+.lux-progress-track {
+    width: 100%;
+    height: 6px;
+    background: var(--bg-soft);
+    border-radius: 10px;
+    margin-bottom: 0.8rem;
+    overflow: hidden;
+}
+
+.lux-progress-fill {
+    height: 100%;
+    border-radius: 10px;
+}
+
+.lux-footer-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+/* CTA Banner */
+.data-cta-banner {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 30px;
+    padding: 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: var(--shadow-premium);
+}
+
+.cta-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.cta-icon {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cta-text h4 {
+    color: white;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.cta-text p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+    max-width: 600px;
+}
+
+.cta-action-btn {
+    padding: 1.2rem 2.5rem;
+    background: white;
+    color: var(--primary);
+    border: none;
+    border-radius: 100px;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    transition: var(--transition-mid);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cta-action-btn:hover {
+    transform: scale(1.05);
+    background: var(--accent);
+    color: white;
+}
+
+@media (max-width: 1024px) {
+    .data-header-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2rem;
+    }
+
+    .data-cta-banner {
+        flex-direction: column;
+        gap: 2rem;
+        text-align: center;
+        padding: 2.5rem;
+    }
+
+    .cta-banner-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}

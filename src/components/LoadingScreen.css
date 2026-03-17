@@ -1,0 +1,97 @@
+.loading-screen-simple {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Transparan estetik (glassmorphism ringan) */
+    background: rgba(255, 255, 255, 0.75); 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    
+    transition: opacity 0.5s ease-in-out;
+    opacity: 1;
+}
+
+.loading-screen-simple.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content-simple {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Spinner simpel dan elegan */
+.spinner-minimal {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(16, 185, 129, 0.15); /* Emerald yang sangat transparan */
+    border-top: 3px solid #10B981; /* Emerald terang */
+    border-right: 3px solid #10B981;
+    border-radius: 50%;
+    animation: spin-minimal 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+/* Teks memuat yang estetik */
+.loading-text-simple {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #059669; /* Emerald sedikit gelap */
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    animation: pulse-text 1.8s ease-in-out infinite;
+    position: relative;
+    /* Memberi jarak karena ada animasi titik-titik di sebelahnya */
+    padding-right: 15px; 
+}
+
+/* Menambahkan efek titik-titik dinamis setelah "Memuat" */
+.loading-text-simple::after {
+    content: '';
+    position: absolute;
+    animation: dots 1.8s infinite steps(4, end);
+}
+
+@keyframes spin-minimal {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse-text {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+}
+
+/* Dark mode support - kalau website punya tema gelap */
+@media (prefers-color-scheme: dark) {
+    .loading-screen-simple {
+        background: rgba(15, 23, 42, 0.75); /* Slate gelap */
+    }
+    
+    .spinner-minimal {
+        border-color: rgba(52, 211, 153, 0.15);
+        border-top-color: #34D399; /* Emerald yang lebih menyala */
+        border-right-color: #34D399;
+    }
+
+    .loading-text-simple {
+        color: #34D399;
+    }
+}

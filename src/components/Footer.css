@@ -1,0 +1,393 @@
+.footer {
+    background: #0a0a0a;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Premium Newsletter Section */
+.footer-newsletter {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    padding: 5rem 0;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-newsletter::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    opacity: 0.05;
+}
+
+.newsletter-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.newsletter-content h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fff, var(--accent-light));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.newsletter-content p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 2.5rem;
+    font-weight: 500;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 0;
+    width: 100%;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 6px;
+    border-radius: 100px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: var(--transition-mid);
+}
+
+.newsletter-form:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 25px rgba(192, 202, 51, 0.3);
+    transform: translateY(-2px);
+}
+
+.newsletter-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 1rem 2rem;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    font-weight: 500;
+}
+
+.newsletter-form input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.newsletter-form button {
+    padding: 1rem 2.5rem;
+    background: var(--gold);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-weight: 800;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.newsletter-form button:hover {
+    background: #f57f17;
+    transform: scale(1.05);
+}
+
+/* Footer Main Layout */
+.footer-main {
+    padding: 6rem 0 4rem;
+    background-image: radial-gradient(circle at 10% 20%, rgba(27, 94, 32, 0.05) 0%, transparent 40%);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+    gap: 4rem;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-logo img {
+    width: 70px;
+    height: auto;
+    filter: drop-shadow(0 0 15px rgba(27, 94, 32, 0.3));
+}
+
+.footer-logo h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: white;
+    letter-spacing: -0.01em;
+}
+
+.footer-address {
+    color: #a0a0a0;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.copy-address-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #e0e0e0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-mid);
+    margin-bottom: 2rem;
+}
+
+.copy-address-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
+    color: white;
+    transform: translateY(-3px);
+}
+
+.copy-address-btn.success {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #b0b0b0;
+    font-size: 0.95rem;
+    transition: var(--transition-mid);
+}
+
+.contact-item:hover {
+    color: white;
+    transform: translateX(8px);
+}
+
+.contact-item svg {
+    color: var(--accent);
+}
+
+.footer-links h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.footer-links h4::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 10px;
+}
+
+.footer-links ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.footer-links a {
+    color: #b0b0b0;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: var(--transition-mid);
+}
+
+.footer-links a:hover {
+    color: var(--accent);
+    padding-left: 8px;
+}
+
+.footer-social h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 2.5rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.social-link {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: var(--transition-mid);
+}
+
+.social-link:hover {
+    transform: translateY(-8px) rotate(8deg);
+    background: var(--primary);
+    border-color: var(--accent);
+    box-shadow: 0 10px 20px rgba(27, 94, 32, 0.4);
+}
+
+/* Enhanced Map Widget */
+.footer-map-widget {
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.map-wrapper {
+    position: relative;
+    height: 180px;
+}
+
+.map-wrapper iframe {
+    filter: none;
+    transition: var(--transition-slow);
+}
+
+.footer-map-widget:hover iframe {
+    filter: none;
+}
+
+.open-in-maps-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: white;
+    color: #1a73e8; /* Google Blue */
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+    z-index: 5;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.open-in-maps-btn span {
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+.open-in-maps-btn:hover {
+    background: #f8f9fa;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+    transform: none;
+}
+
+/* Footer Bottom Area */
+.footer-bottom {
+    background: #050505;
+    padding: 2.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #888;
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.footer-bottom-content p strong {
+    color: #aaa;
+    font-weight: 600;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1200px) {
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-newsletter {
+        padding: 4rem 0;
+    }
+
+    .newsletter-content h3 {
+        font-size: 2rem;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+        border-radius: 24px;
+        padding: 10px;
+    }
+
+    .newsletter-form input {
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .footer-bottom-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
