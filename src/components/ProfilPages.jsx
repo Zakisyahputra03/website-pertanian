@@ -625,3 +625,134 @@ export const StrukturOrganisasi = () => {
     </SimpleProfileLayout>
   );
 };
+
+export const LHKPN = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const result = await ApiService.getLHKPN();
+        setData(ApiService.normalizeObject(result));
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching LHKPN:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <SimpleProfileLayout title="LHKPN">
+        <div className="loading-container">
+          <Loader className="loading-spinner" />
+          <p>Memuat data...</p>
+        </div>
+      </SimpleProfileLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <SimpleProfileLayout title="LHKPN">
+        <div className="error-container">
+          <p>Terjadi kesalahan saat memuat data: {error}</p>
+        </div>
+      </SimpleProfileLayout>
+    );
+  }
+
+  return (
+    <SimpleProfileLayout title="LHKPN">
+      <div className="aesthetic-profile-section">
+        {data && data.isi ? (
+          <div
+            className="profile-intro-card reveal reveal-up"
+            dangerouslySetInnerHTML={{ __html: data.isi }}
+          />
+        ) : (
+          <div className="profile-intro-card reveal reveal-up">
+            <ShieldCheck className="section-icon-large" />
+            <p>
+              Informasi LHKPN (Laporan Harta Kekayaan Penyelenggara Negara)
+              untuk Dinas Pertanian Provinsi Sumatera Barat tersedia di halaman
+              ini.
+            </p>
+          </div>
+        )}
+      </div>
+    </SimpleProfileLayout>
+  );
+};
+
+export const ProfilPejabat = () => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const result = await ApiService.getProfilPejabat();
+        setData(ApiService.normalizeObject(result));
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching Profil Pejabat:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <SimpleProfileLayout title="Profil Pejabat">
+        <div className="loading-container">
+          <Loader className="loading-spinner" />
+          <p>Memuat data...</p>
+        </div>
+      </SimpleProfileLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <SimpleProfileLayout title="Profil Pejabat">
+        <div className="error-container">
+          <p>Terjadi kesalahan saat memuat data: {error}</p>
+        </div>
+      </SimpleProfileLayout>
+    );
+  }
+
+  return (
+    <SimpleProfileLayout title="Profil Pejabat">
+      <div className="aesthetic-profile-section">
+        {data && data.isi ? (
+          <div
+            className="profile-intro-card reveal reveal-up"
+            dangerouslySetInnerHTML={{ __html: data.isi }}
+          />
+        ) : (
+          <div className="profile-intro-card reveal reveal-up">
+            <UserCheck className="section-icon-large" />
+            <p>
+              Profil pejabat Dinas Pertanian Provinsi Sumatera Barat menampilkan
+              informasi tugas, jabatan, dan profil personel kunci.
+            </p>
+          </div>
+        )}
+      </div>
+    </SimpleProfileLayout>
+  );
+};

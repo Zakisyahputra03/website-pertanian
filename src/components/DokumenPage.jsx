@@ -80,6 +80,16 @@ const DokumenPage = () => {
         setLoading(true);
         setError(null);
         const result = await ApiService.getDownloadData();
+        const resolveUrl = (raw) => {
+          if (!raw) return null;
+          const s = String(raw).trim();
+          if (!s) return null;
+          if (s.startsWith("http://") || s.startsWith("https://")) return s;
+          if (s.startsWith("//")) return `https:${s}`;
+          if (s.startsWith("/")) return `https://api-web.sumbarprov.go.id${s}`;
+          return `https://api-web.sumbarprov.go.id/${s}`;
+        };
+
         const list = ApiService.normalizeList(result).map((item, index) => ({
           id: item.id || item.document_id || item.id_content || index + 1,
           title:
@@ -89,12 +99,7 @@ const DokumenPage = () => {
             item.name ||
             "Dokumen Publik",
           category: item.category || item.kategori || item.tipe || "Laporan",
-          size:
-            item.size ||
-            item.ukuran ||
-            item.file_size ||
-            item.file_size ||
-            "N/A",
+          size: item.size || item.ukuran || item.file_size || "N/A",
           date:
             item.tanggal || item.date || item.created_at || "Tidak tersedia",
           type: (
@@ -103,13 +108,14 @@ const DokumenPage = () => {
             item.file_type ||
             "PDF"
           ).toUpperCase(),
-          url:
+          url: resolveUrl(
             item.file_url ||
-            item.file ||
-            item.link ||
-            item.download_url ||
-            item.url ||
-            null,
+              item.file ||
+              item.link ||
+              item.download_url ||
+              item.url ||
+              null,
+          ),
         }));
 
         setDocs(list.length > 0 ? list : allDocs);

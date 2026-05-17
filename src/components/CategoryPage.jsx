@@ -18,41 +18,45 @@ import "./CategoryPage.css";
 import DocumentPreview from "./DocumentPreview";
 
 const formatSlug = (slug) => {
-  return slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
 const normalizeItem = (item) => {
+  const resolveUrl = (raw) => {
+    if (!raw) return null;
+    const s = String(raw).trim();
+    if (!s) return null;
+    if (s.startsWith("http://") || s.startsWith("https://")) return s;
+    if (s.startsWith("//")) return `https:${s}`;
+    if (s.startsWith("/")) return `https://api-web.sumbarprov.go.id${s}`;
+    // fallback: assume relative path on API host
+    return `https://api-web.sumbarprov.go.id/${s}`;
+  };
+
   const rawFile =
-    item.file_url || item.file || item.url || item.link || item.cover || "#";
-  const fileUrl =
-    rawFile && rawFile !== "#" && rawFile.startsWith("/")
-      ? `https://api-web.sumbarprov.go.id${rawFile}`
-      : rawFile;
+    item.file_url || item.file || item.url || item.link || item.cover || null;
+  const fileUrl = resolveUrl(rawFile);
 
   const rawCover =
     item.cover || item.gambar || item.image || item.thumbnail || null;
-  const coverUrl =
-    rawCover && rawCover.startsWith("/")
-      ? `https://api-web.sumbarprov.go.id${rawCover}`
-      : rawCover;
+  const coverUrl = resolveUrl(rawCover);
 
   // Detect file type from URL or explicit field
-  const rawType = item.type || item.format || item.tipe || "";
+  const rawType = (item.type || item.format || item.tipe || "").toString();
+  const lowerFile = String(rawFile || "").toLowerCase();
   const detectedType =
     rawType ||
-    (rawFile.includes(".pdf")
+    (lowerFile.includes(".pdf")
       ? "pdf"
-      : rawFile.includes(".xlsx") || rawFile.includes(".xls")
+      : lowerFile.includes(".xlsx") || lowerFile.includes(".xls")
         ? "xlsx"
-        : rawFile.includes(".docx") || rawFile.includes(".doc")
+        : lowerFile.includes(".docx") || lowerFile.includes(".doc")
           ? "docx"
-          : rawFile.includes(".pptx") || rawFile.includes(".ppt")
+          : lowerFile.includes(".pptx") || lowerFile.includes(".ppt")
             ? "pptx"
-            : rawFile.includes(".jpg") ||
-                rawFile.includes(".png") ||
-                rawFile.includes(".jpeg")
+            : lowerFile.includes(".jpg") ||
+                lowerFile.includes(".png") ||
+                lowerFile.includes(".jpeg")
               ? "jpg"
               : "PDF");
 
@@ -63,12 +67,23 @@ const normalizeItem = (item) => {
       item.description || item.deskripsi || item.summary || item.isi || "",
     fileUrl,
     coverUrl,
+    coverRaw: rawCover,
     date: item.date || item.tanggal || item.created_at || "-",
     size: item.size || item.file_size || item.ukuran || "-",
     type: detectedType.toUpperCase(),
   };
 };
 
+const stripHtml = (html) => {
+  if (!html) return "";
+  try {
+    return String(html)
+      .replace(/<[^>]*>/g, "")
+      .trim();
+  } catch {
+    return String(html);
+  }
+};
 // Skeleton loading card
 const SkeletonCard = () => (
   <div className="skeleton-card">
@@ -159,10 +174,7 @@ const CategoryPage = () => {
       <div className="category-hero-header">
         <div className="hero-inner">
           <div className="category-top-actions">
-            <button
-              onClick={() => navigate(-1)}
-              className="category-back-btn"
-            >
+            <button onClick={() => navigate(-1)} className="category-back-btn">
               <ArrowLeft size={16} />
               <span>Kembali</span>
             </button>
@@ -183,8 +195,8 @@ const CategoryPage = () => {
             <h1>{formatSlug(slug)}</h1>
             <p>
               Kumpulan dokumen resmi dan informasi terkait{" "}
-              {formatSlug(slug).toLowerCase()} Dinas Pertanian Provinsi
-              Sumatera Barat.
+              {formatSlug(slug).toLowerCase()} Dinas Pertanian Provinsi Sumatera
+              Barat.
             </p>
           </div>
         </div>
@@ -192,7 +204,6 @@ const CategoryPage = () => {
 
       {/* ===== MAIN CONTENT ===== */}
       <div className="container-narrow" style={{ marginTop: "2.5rem" }}>
-
         {/* Search & Sort Bar */}
         <div className="category-controls-bar">
           <div className="category-search-input">
@@ -282,7 +293,10 @@ const CategoryPage = () => {
         {/* Error State */}
         {!loading && error && (
           <div className="error-container">
-            <AlertCircle size={40} style={{ color: "#dc2626", marginBottom: "0.75rem" }} />
+            <AlertCircle
+              size={40}
+              style={{ color: "#dc2626", marginBottom: "0.75rem" }}
+            />
             <p>Gagal memuat data: {error}</p>
           </div>
         )}
@@ -293,18 +307,79 @@ const CategoryPage = () => {
             <div className="category-grid-page">
               {paginatedItems.length > 0 ? (
                 paginatedItems.map((item, index) => (
-                  <div
-                    key={`${item.title}-${index}`}
-                    className="doc-page-card"
-                  >
+                  <div key={`${item.title}-${index}`} className="doc-page-card">
                     {/* Cover Image (if any) */}
                     {item.coverUrl && (
                       <img
                         src={item.coverUrl}
                         alt={item.title}
                         className="doc-cover-image"
+                        data-coverraw={item.coverRaw || ""}
+                        data-tried={0}
                         onError={(e) => {
-                          e.target.style.display = "none";
+                          try {
+                            const img = e.target;
+                            const tried = Number(img.dataset.tried || 0);
+                            const raw = img.dataset.coverraw || "";
+                            const src = img.src || "";
+                            const candidates = [];
+
+                            // If raw looks like protocol-relative
+                            if (raw.startsWith("//"))
+                              candidates.push(`https:${raw}`);
+                            // If raw starts with single slash
+                            if (raw.startsWith("/"))
+                              candidates.push(
+                                `https://api-web.sumbarprov.go.id${raw}`,
+                              );
+                            // If raw is relative path (no protocol, no leading slash)
+                            if (
+                              raw &&
+                              !raw.startsWith("http") &&
+                              !raw.startsWith("/")
+                            )
+                              candidates.push(
+                                `https://api-web.sumbarprov.go.id/${raw}`,
+                              );
+                            // Try swapping api-web host variants
+                            if (src.includes("api-web.sumbarprov.go.id")) {
+                              candidates.push(
+                                src.replace(
+                                  "api-web.sumbarprov.go.id",
+                                  "sumbarprov.go.id",
+                                ),
+                              );
+                              candidates.push(
+                                src.replace(
+                                  "api-web.sumbarprov.go.id",
+                                  "www.sumbarprov.go.id",
+                                ),
+                              );
+                            }
+                            // Try toggling https/http
+                            if (src.startsWith("https://"))
+                              candidates.push(
+                                src.replace("https://", "http://"),
+                              );
+                            if (src.startsWith("http://"))
+                              candidates.push(
+                                src.replace("http://", "https://"),
+                              );
+
+                            // remove duplicates
+                            const uniq = [
+                              ...new Set(candidates.filter(Boolean)),
+                            ];
+
+                            if (tried < uniq.length) {
+                              img.dataset.tried = tried + 1;
+                              img.src = uniq[tried];
+                            } else {
+                              img.style.display = "none";
+                            }
+                          } catch (err) {
+                            e.target.style.display = "none";
+                          }
                         }}
                       />
                     )}
@@ -341,7 +416,7 @@ const CategoryPage = () => {
                         </div>
 
                         {item.description && (
-                          <p>{item.description}</p>
+                          <p>{stripHtml(item.description)}</p>
                         )}
                       </div>
 
@@ -350,9 +425,7 @@ const CategoryPage = () => {
                       {/* Actions */}
                       <div className="doc-card-actions">
                         <button
-                          onClick={() =>
-                            openPreview(item.fileUrl, item.title)
-                          }
+                          onClick={() => openPreview(item.fileUrl, item.title)}
                           className="btn-preview-doc"
                         >
                           <Eye size={15} />
