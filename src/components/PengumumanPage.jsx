@@ -26,7 +26,7 @@ const PengumumanPage = () => {
       try {
         setLoading(true);
         const result = await ApiService.getPengumuman();
-        setPengumumanData(Array.isArray(result) ? result : result.data || []);
+        setPengumumanData(ApiService.normalizeList(result));
       } catch (err) {
         setError(err.message);
         console.error("Error fetching pengumuman:", err);
@@ -135,13 +135,44 @@ const PengumumanPage = () => {
                   </div>
                 </div>
                 <div className="p-card-body">
-                  <h3>{item.title || item.judul}</h3>
-                  <p>{item.content || item.deskripsi || item.excerpt}</p>
+                  <h3>{item.title || item.judul || item.nama}</h3>
+                  <p>
+                    {item.content ||
+                      item.isi ||
+                      item.deskripsi ||
+                      item.excerpt ||
+                      item.summary}
+                  </p>
                 </div>
                 <div className="p-card-footer">
-                  <button className="btn-p-action">
-                    Lihat Selengkapnya <ChevronRight size={16} />
-                  </button>
+                  <div className="p-card-actions">
+                    {(item.file_url ||
+                      item.file ||
+                      item.lampiran ||
+                      item.link) && (
+                      <a
+                        href={
+                          item.file_url ||
+                          item.file ||
+                          item.lampiran ||
+                          item.link
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-p-action"
+                      >
+                        Lihat Lampiran <ChevronRight size={16} />
+                      </a>
+                    )}
+                    {!item.file_url &&
+                      !item.file &&
+                      !item.lampiran &&
+                      !item.link && (
+                        <button className="btn-p-action">
+                          Lihat Selengkapnya <ChevronRight size={16} />
+                        </button>
+                      )}
+                  </div>
                   {(item.important || item.prioritas) && (
                     <span className="important-badge">
                       <Info size={14} /> Penting

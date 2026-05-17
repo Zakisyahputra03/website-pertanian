@@ -103,8 +103,7 @@ export const FotoActivities = () => {
       try {
         setLoading(true);
         const result = await ApiService.getGaleriFoto();
-        // API returns: { data: [...] } or directly an array
-        const photosData = Array.isArray(result) ? result : result.data || [];
+        const photosData = ApiService.normalizeList(result);
         // Map API fields to component fields
         const mappedPhotos = photosData.map((item, index) => ({
           id: item.id || index + 1,
@@ -332,6 +331,10 @@ export const FotoActivities = () => {
 };
 
 export const VideoDokumentasi = () => {
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const handleShare = (title) => {
     if (navigator.share) {
       navigator
@@ -349,43 +352,106 @@ export const VideoDokumentasi = () => {
     }
   };
 
-  const videos = [
+  const parseYoutubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(
+      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/,
+    );
+    return match ? match[1] : null;
+  };
+
+  const getEmbedUrl = (url) => {
+    if (!url) return null;
+    const videoId = parseYoutubeId(url);
+    if (videoId) return `https://www.youtube.com/embed/${videoId}`;
+    if (url.startsWith("https://") || url.startsWith("http://")) return url;
+    return null;
+  };
+
+  const fallbackVideos = [
     {
       id: "video1",
-      youtubeId: "W_R4_tY5n6I", // Example YouTube ID
+      embedUrl: "https://www.youtube.com/embed/W_R4_tY5n6I",
       title: "Profil Dinas Pertanian Provinsi Sumatera Barat 2026",
       category: "PROFIL",
       desc: "Informasi menyeluruh mengenai visi, misi, dan program unggulan Dinas Pertanian Sumatera Barat.",
     },
     {
       id: "video2",
-      youtubeId: "G1p8vS8sQsw", // Example YouTube ID
+      embedUrl: "https://www.youtube.com/embed/G1p8vS8sQsw",
       title: "Panen Raya Padi Organik di Ranah Minang",
       category: "DOKUMENTASI",
       desc: "Liputan khusus kegiatan panen raya serentak di kawasan persawahan lumbung pangan Sumbar.",
     },
     {
       id: "video3",
-      youtubeId: "ZYz0wfLHfZ8",
+      embedUrl: "https://www.youtube.com/embed/ZYz0wfLHfZ8",
       title: "Sosialisasi Pupuk: Penebusan Pupuk Digital (i-Pubers)",
       category: "EDUKASI",
       desc: "Informasi dan panduan mengenai sosialisasi penggunaan aplikasi i-Pubers untuk penebusan pupuk bersubsidi bagi petani.",
     },
     {
       id: "video4",
-      youtubeId: "qfcl_O1j2X0", // Example YouTube ID
+      embedUrl: "https://www.youtube.com/embed/qfcl_O1j2X0",
       title: "Testimoni Petani Milenial Payakumbuh",
       category: "INSPIRASI",
       desc: "Kisah sukses para pemuda yang membuktikan bahwa bertani bisa menguntungkan dan keren.",
     },
     {
       id: "video5",
-      youtubeId: "kkvVVOzSdIk",
+      embedUrl: "https://www.youtube.com/embed/kkvVVOzSdIk",
       title: "Penyerahan Bantuan Alat dan Mesin Pertanian (Alsintan)",
       category: "PROGRAM",
       desc: "Dokumentasi penyerahan bantuan alat mesin pertanian guna mendukung produktivitas kelompok tani di Sumatera Barat.",
     },
   ];
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const result = await ApiService.getGaleriVideo();
+        const list = ApiService.normalizeList(result).map((item, index) => {
+          const url =
+            item.url ||
+            item.video_url ||
+            item.link ||
+            item.embed ||
+            item.file_url;
+          return {
+            id: item.id || item.videoId || item.youtubeId || index + 1,
+            title:
+              item.title || item.judul || item.name || `Video ${index + 1}`,
+            category: (
+              item.category ||
+              item.kategori ||
+              item.type ||
+              "Video"
+            ).toUpperCase(),
+            desc: item.description || item.deskripsi || item.summary || "",
+            embedUrl: getEmbedUrl(url),
+          };
+        });
+
+        setVideos(
+          list.filter((video) => video.embedUrl).length > 0
+            ? list
+            : fallbackVideos,
+        );
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching video gallery:", err);
+        setVideos(fallbackVideos);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, []);
+
+  const videosToDisplay = videos.length > 0 ? videos : fallbackVideos;
 
   return (
     <GalleryLayout
@@ -393,47 +459,66 @@ export const VideoDokumentasi = () => {
       subtitle="Saksikan rekaman visual aktivitas, edukasi, dan capaian sektor pertanian kami."
       bg={videoHeroBg}
     >
-      <div className="video-grid-premium reveal">
-        {videos.map((video) => (
-          <div key={video.id} className="video-card-premium">
-            <div className="video-iframe-wrap">
-              <iframe
-                src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                title={video.title}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-            <div className="video-info-content">
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                }}
-              >
-                <span className="video-meta-tag">{video.category}</span>
-                <button
-                  className="share-btn-minimal"
-                  onClick={() => handleShare(video.title)}
-                  title="Bagikan"
+      {loading || error ? (
+        <div
+          className={loading ? "loading-container" : "error-container"}
+          style={{ padding: "4rem", textAlign: "center" }}
+        >
+          {loading ? (
+            <>
+              <Loader
+                className="loading-spinner"
+                style={{ width: "40px", height: "40px" }}
+              />
+              <p>Memuat video...</p>
+            </>
+          ) : (
+            <p>Terjadi kesalahan saat memuat video: {error}</p>
+          )}
+        </div>
+      ) : (
+        <div className="video-grid-premium reveal">
+          {videosToDisplay.map((video) => (
+            <div key={video.id} className="video-card-premium">
+              <div className="video-iframe-wrap">
+                <iframe
+                  src={video.embedUrl}
+                  title={video.title}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <div className="video-info-content">
+                <div
                   style={{
-                    background: "none",
-                    border: "none",
-                    color: "var(--text-muted)",
-                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
                   }}
                 >
-                  <Share2 size={18} />
-                </button>
+                  <span className="video-meta-tag">{video.category}</span>
+                  <button
+                    className="share-btn-minimal"
+                    onClick={() => handleShare(video.title)}
+                    title="Bagikan"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "var(--text-muted)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Share2 size={18} />
+                  </button>
+                </div>
+                <h3>{video.title}</h3>
+                <p className="video-description">{video.desc}</p>
               </div>
-              <h3>{video.title}</h3>
-              <p className="video-description">{video.desc}</p>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </GalleryLayout>
   );
 };

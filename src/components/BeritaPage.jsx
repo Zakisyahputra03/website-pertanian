@@ -28,8 +28,7 @@ const BeritaPage = () => {
       try {
         setLoading(true);
         const result = await ApiService.getBeritaUtama();
-        // Assuming the API returns an array of berita items
-        setBeritaData(Array.isArray(result) ? result : result.data || []);
+        setBeritaData(ApiService.normalizeList(result));
       } catch (err) {
         setError(err.message);
         console.error("Error fetching berita:", err);
@@ -161,7 +160,15 @@ const BeritaPage = () => {
                   </span>
                   <span className="dot"></span>
                   <span>
-                    {item.readTime || item.waktu_baca || "5 menit"} Baca
+                    {item.penulis || item.author || item.writer || "Redaksi"}
+                  </span>
+                  <span className="dot"></span>
+                  <span>
+                    {item.readTime ||
+                      item.waktu_baca ||
+                      item.duration ||
+                      "5 menit"}{" "}
+                    Baca
                   </span>
                 </div>
                 <h2>
@@ -169,11 +176,19 @@ const BeritaPage = () => {
                     {item.title || item.judul}
                   </Link>
                 </h2>
+                {item.subtitle || item.subjudul || item.summary ? (
+                  <p className="neat-news-subtitle">
+                    {item.subtitle || item.subjudul || item.summary}
+                  </p>
+                ) : null}
                 <p>
                   {item.excerpt ||
+                    item.summary ||
                     item.description ||
                     item.deskripsi ||
-                    item.content?.substring(0, 150) + "..."}
+                    (item.content
+                      ? item.content.substring(0, 150) + "..."
+                      : "")}
                 </p>
                 <Link
                   to={`/berita/${item.id || index}`}

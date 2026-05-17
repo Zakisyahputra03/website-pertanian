@@ -15,6 +15,9 @@ export default defineConfig({
         target: "https://ppid.sumbarprov.go.id",
         changeOrigin: true,
         secure: true,
+        // Rewrite incoming /ppid/* to /api/* on the target host
+        // so that a client request to /ppid/instansi -> https://ppid.sumbarprov.go.id/api/instansi
+        rewrite: (path) => path.replace(/^\/ppid/, "/api"),
       },
     },
   },

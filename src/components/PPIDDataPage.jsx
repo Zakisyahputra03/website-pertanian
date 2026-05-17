@@ -30,6 +30,8 @@ const PPIDDataPage = () => {
   const [selectedInstansi, setSelectedInstansi] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [clusterData, setClusterData] = useState([]);
+  const [selectedDetail, setSelectedDetail] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -43,16 +45,8 @@ const PPIDDataPage = () => {
         ]);
 
         // API PPID mengembalikan struktur: { response: "1", result: [...] }
-        setInstansiData(
-          Array.isArray(instansiResult)
-            ? instansiResult
-            : instansiResult.result || [],
-        );
-        setCategoryData(
-          Array.isArray(categoryResult)
-            ? categoryResult
-            : categoryResult.result || [],
-        );
+        setInstansiData(ApiService.normalizeList(instansiResult));
+        setCategoryData(ApiService.normalizeList(categoryResult));
       } catch (err) {
         setError(err.message);
         console.error("Error fetching PPID data:", err);
@@ -71,7 +65,7 @@ const PPIDDataPage = () => {
         instansiId,
         categoryId,
       );
-      setClusterData(Array.isArray(result) ? result : []);
+      setClusterData(ApiService.normalizeList(result));
     } catch (err) {
       setError(err.message);
       console.error("Error fetching cluster data:", err);
@@ -88,8 +82,28 @@ const PPIDDataPage = () => {
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
+    setSelectedDetail(null);
     if (selectedInstansi) {
       fetchClusterData(selectedInstansi.id, category.id);
+    }
+  };
+
+  const handleShowDetail = async (item) => {
+    if (!selectedInstansi) return;
+    setSelectedDetail(null);
+    setDetailLoading(true);
+
+    try {
+      const detailResult = await ApiService.getPPIDDetailDip(
+        selectedInstansi.id,
+        item.id_content || item.id,
+      );
+      setSelectedDetail(ApiService.normalizeObject(detailResult));
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fetching detail:", err);
+    } finally {
+      setDetailLoading(false);
     }
   };
 
@@ -222,9 +236,10 @@ const PPIDDataPage = () => {
             )}
 
             {selectedCategory && !loading && clusterData.length > 0 && (
-              <div className="ppid-data-section">
-                <h3>Data {selectedCategory.nama || selectedCategory.name}</h3>
-                <div className="ppid-data-grid">
+              <>
+                <div className="ppid-data-section">
+                  <h3>Data {selectedCategory.nama || selectedCategory.name}</h3>
+                  <div className="ppid-data-grid">
                   {clusterData.map((item, index) => (
                     <div key={item.id || index} className="ppid-data-card">
                       <div className="ppid-data-header">
@@ -246,19 +261,7 @@ const PPIDDataPage = () => {
                         {item.id_content && (
                           <button
                             className="ppid-detail-btn"
-                            onClick={async () => {
-                              try {
-                                const detailResult =
-                                  await ApiService.getPPIDDetailDip(
-                                    selectedInstansi.id,
-                                    item.id_content,
-                                  );
-                                // Handle detail view - you can implement a modal or navigate to detail page
-                                console.log("Detail data:", detailResult);
-                              } catch (err) {
-                                console.error("Error fetching detail:", err);
-                              }
-                            }}
+                            onClick={() => handleShowDetail(item)}
                           >
                             <Eye size={16} />
                             Lihat Detail
@@ -280,6 +283,54 @@ const PPIDDataPage = () => {
                   ))}
                 </div>
               </div>
+
+              {(detailLoading || selectedDetail) && (
+                <div className="ppid-detail-panel reveal">
+                  <h3>Detail Informasi Publik</h3>
+                  {detailLoading ? (
+                    <div className="loading-container">
+                      <Loader className="loading-spinner" />
+                      <p>Memuat detail...</p>
+                    </div>
+                  ) : selectedDetail ? (
+                    <div className="ppid-detail-content">
+                      <p>
+                        <strong>Judul:</strong>{" "}
+                        {selectedDetail.judul || selectedDetail.title || selectedDetail.nama}
+                      </p>
+                      <p>
+                        <strong>Tanggal:</strong>{" "}
+                        {selectedDetail.tanggal || selectedDetail.created_at || selectedDetail.date || "Tidak tersedia"}
+                      </p>
+                      <p>
+                        <strong>Status:</strong>{" "}
+                        {selectedDetail.status || selectedDetail.keterangan || "Tidak tersedia"}
+                      </p>
+                      <div
+                        className="ppid-detail-body"
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            selectedDetail.isi ||
+                            selectedDetail.description ||
+                            selectedDetail.content ||
+                            selectedDetail.deskripsi ||
+                            "<p>Detail informasi tidak tersedia.</p>",
+                        }}
+                      />
+                      {(selectedDetail.file_url || selectedDetail.file || selectedDetail.link) && (
+                        <a
+                          href={selectedDetail.file_url || selectedDetail.file || selectedDetail.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="ppid-download-btn"
+                        >
+                          <Download size={16} /> Unduh Lampiran
+                        </a>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              )}
             )}
 
             {selectedCategory && !loading && clusterData.length === 0 && (

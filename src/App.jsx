@@ -44,6 +44,9 @@ import {
   FotoActivities as FotoActivities,
   VideoDokumentasi,
 } from "./components/GaleriPages";
+import CategoryPage from "./components/CategoryPage";
+import GenericPage from "./components/GenericPage";
+import AllCategories from "./components/AllCategories";
 import TransparansiDataPage from "./components/TransparansiDataPage";
 import FAQPage from "./components/FAQPage";
 import AgendaPage from "./components/AgendaPage";
@@ -177,6 +180,19 @@ function AppContent() {
         {/* Galeri Routes */}
         <Route path="/galeri/foto" element={<FotoActivities />} />
         <Route path="/galeri/video" element={<VideoDokumentasi />} />
+        <Route path="/kategori/:slug" element={<CategoryPage />} />
+        <Route path="/kategori" element={<AllCategories />} />
+        <Route path="/halaman/:slug" element={<GenericPage />} />
+        <Route
+          path="/profil/lhkpn"
+          element={<GenericPage slug="lhkpn" pageTitle="LHKPN" />}
+        />
+        <Route
+          path="/profil/profil-pejabat"
+          element={
+            <GenericPage slug="profil-pejabat" pageTitle="Profil Pejabat" />
+          }
+        />
         <Route
           path="/galeri"
           element={<Navigate to="/galeri/foto" replace />}

@@ -2,7 +2,7 @@
 
 // Base URLs - menggunakan proxy Vite untuk development
 export const API_BASE_URL = "/api";
-export const PPID_BASE_URL = "/ppid";
+export const PPID_BASE_URL = "/ppid/api";
 
 // Kode Instansi untuk Dinas Perkebunan
 export const KODE_INSTANSI = "2654";
@@ -12,29 +12,29 @@ export const API_ENDPOINTS = {
   // Pages API - untuk halaman statis
   PAGES: {
     VISI_MISI: `${API_BASE_URL}/pages/visi-misi/${KODE_INSTANSI}`,
-    TUGAS_DAN_FUNGSI: `${API_BASE_URL}/pages/tugas-fungsi/${KODE_INSTANSI}`,
-    STRUKTUR_ORGANISASI: `${API_BASE_URL}/pages/struktur/${KODE_INSTANSI}`,
+    TUGAS_DAN_FUNGSI: `${API_BASE_URL}/pages/tugas-dan-fungsi/${KODE_INSTANSI}`,
+    STRUKTUR_ORGANISASI: `${API_BASE_URL}/pages/struktur-organisasi/${KODE_INSTANSI}`,
     LHKPN: `${API_BASE_URL}/pages/lhkpn/${KODE_INSTANSI}`,
-    SEJARAH_SINGKAT: `${API_BASE_URL}/pages/sejarah/${KODE_INSTANSI}`,
+    SEJARAH_SINGKAT: `${API_BASE_URL}/pages/sejarah-singkat/${KODE_INSTANSI}`,
     PROFIL_PEJABAT: `${API_BASE_URL}/pages/profil-pejabat/${KODE_INSTANSI}`,
   },
 
-  // Category API - untuk konten dinamis
+  // Category API - untuk konten dinamis menggunakan /api/<slug>/<instansi>
   CATEGORY: {
-    BERITA_UTAMA: `${API_BASE_URL}/category/berita-utama/${KODE_INSTANSI}`,
-    PENGUMUMAN: `${API_BASE_URL}/pengumuman/${KODE_INSTANSI}`, // Langsung dari /api/pengumuman/
-    DOWNLOAD: `${API_BASE_URL}/category/download/${KODE_INSTANSI}`,
-    INFOGRAFIS: `${API_BASE_URL}/category/infografis/${KODE_INSTANSI}`,
-    LAPORAN_KINERJA: `${API_BASE_URL}/category/laporan-kinerja-instansi-pemerintah/${KODE_INSTANSI}`,
-    PERJANJIAN_KINERJA: `${API_BASE_URL}/category/perjanjian-kinerja/${KODE_INSTANSI}`,
-    RENCANA_KERJA: `${API_BASE_URL}/category/rencana-kerja/${KODE_INSTANSI}`,
-    RENCANA_KINERJA_TAHUNAN: `${API_BASE_URL}/category/rencana-kinerja-tahunan/${KODE_INSTANSI}`,
-    RENCANA_STRATEGIS: `${API_BASE_URL}/category/rencana-strategis/${KODE_INSTANSI}`,
-    SOP: `${API_BASE_URL}/category/sop/${KODE_INSTANSI}`,
-    INDIKATOR_KINERJA_INDIVIDU: `${API_BASE_URL}/category/indikator-kinerja-individu/${KODE_INSTANSI}`,
-    RENAKSI_REALISASI: `${API_BASE_URL}/category/renaksi-dan-realisasi-renaksi/${KODE_INSTANSI}`,
-    SKP: `${API_BASE_URL}/category/skp/${KODE_INSTANSI}`,
-    IKU: `${API_BASE_URL}/category/iku/${KODE_INSTANSI}`,
+    BERITA_UTAMA: `${API_BASE_URL}/berita-utama/${KODE_INSTANSI}`,
+    PENGUMUMAN: `${API_BASE_URL}/pengumuman/${KODE_INSTANSI}`,
+    DOWNLOAD: `${API_BASE_URL}/download/${KODE_INSTANSI}`,
+    INFOGRAFIS: `${API_BASE_URL}/infografis/${KODE_INSTANSI}`,
+    LAPORAN_KINERJA: `${API_BASE_URL}/laporan-kinerja-instansi-pemerintah/${KODE_INSTANSI}`,
+    PERJANJIAN_KINERJA: `${API_BASE_URL}/perjanjian-kinerja/${KODE_INSTANSI}`,
+    RENCANA_KERJA: `${API_BASE_URL}/rencana-kerja/${KODE_INSTANSI}`,
+    RENCANA_KINERJA_TAHUNAN: `${API_BASE_URL}/rencana-kinerja-tahunan/${KODE_INSTANSI}`,
+    RENCANA_STRATEGIS: `${API_BASE_URL}/rencana-strategis/${KODE_INSTANSI}`,
+    SOP: `${API_BASE_URL}/sop/${KODE_INSTANSI}`,
+    INDIKATOR_KINERJA_INDIVIDU: `${API_BASE_URL}/indikator-kinerja-individu/${KODE_INSTANSI}`,
+    RENAKSI_REALISASI: `${API_BASE_URL}/renaksi-dan-realisasi-renaksi/${KODE_INSTANSI}`,
+    SKP: `${API_BASE_URL}/skp/${KODE_INSTANSI}`,
+    IKU: `${API_BASE_URL}/iku/${KODE_INSTANSI}`,
   },
 
   // Gallery APIs - menggunakan galery (sesuai API)
@@ -76,6 +76,27 @@ export class ApiService {
     }
   }
 
+  static normalizeList(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.data)) return data.data;
+    if (Array.isArray(data.result)) return data.result;
+    if (Array.isArray(data.items)) return data.items;
+    if (Array.isArray(data.list)) return data.list;
+    return [];
+  }
+
+  static normalizeObject(data) {
+    if (data == null) return null;
+    return data.data ?? data.result ?? data.item ?? data.detail ?? data;
+  }
+
+  static buildQueryUrl(url, params = {}) {
+    const queryParams = new URLSearchParams(params);
+    const queryString = queryParams.toString();
+    return queryString ? `${url}?${queryString}` : url;
+  }
+
   // Pages API Methods
   static async getVisiMisi() {
     return this.fetchData(API_ENDPOINTS.PAGES.VISI_MISI);
@@ -108,59 +129,59 @@ export class ApiService {
 
   // Category API Methods
   static async getBeritaUtama() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.BERITA_UTAMA);
+    return this.getCategory("berita-utama");
   }
 
   static async getPengumuman() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.PENGUMUMAN);
+    return this.getCategory("pengumuman");
   }
 
   static async getDownloadData() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.DOWNLOAD);
+    return this.getCategory("download");
   }
 
   static async getInfografis() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.INFOGRAFIS);
+    return this.getCategory("infografis");
   }
 
   static async getLaporanKinerja() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.LAPORAN_KINERJA);
+    return this.getCategory("laporan-kinerja-instansi-pemerintah");
   }
 
   static async getPerjanjianKinerja() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.PERJANJIAN_KINERJA);
+    return this.getCategory("perjanjian-kinerja");
   }
 
   static async getRencanaKerja() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.RENCANA_KERJA);
+    return this.getCategory("rencana-kerja");
   }
 
   static async getRencanaKinerjaTahunan() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.RENCANA_KINERJA_TAHUNAN);
+    return this.getCategory("rencana-kinerja-tahunan");
   }
 
   static async getRencanaStrategis() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.RENCANA_STRATEGIS);
+    return this.getCategory("rencana-strategis");
   }
 
   static async getSOP() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.SOP);
+    return this.getCategory("sop");
   }
 
   static async getIndikatorKinerjaIndividu() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.INDIKATOR_KINERJA_INDIVIDU);
+    return this.getCategory("indikator-kinerja-individu");
   }
 
   static async getRenaksiRealisasi() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.RENAKSI_REALISASI);
+    return this.getCategory("renaksi-dan-realisasi-renaksi");
   }
 
   static async getSKP() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.SKP);
+    return this.getCategory("skp");
   }
 
   static async getIKU() {
-    return this.fetchData(API_ENDPOINTS.CATEGORY.IKU);
+    return this.getCategory("iku");
   }
 
   // Gallery API Methods
@@ -182,12 +203,18 @@ export class ApiService {
   }
 
   static async getPPIDClusterData(instansiId, categoryId) {
-    const url = `${API_ENDPOINTS.PPID.CLUSTER_DATA}?id_instansi=${instansiId}&id_category=${categoryId}`;
+    const url = this.buildQueryUrl(API_ENDPOINTS.PPID.CLUSTER_DATA, {
+      id_instansi: instansiId,
+      id_category: categoryId,
+    });
     return this.fetchData(url);
   }
 
   static async getPPIDDetailDip(instansiId, contentId) {
-    const url = `${API_ENDPOINTS.PPID.DETAIL_DIP}?id_instansi=${instansiId}&id_content=${contentId}`;
+    const url = this.buildQueryUrl(API_ENDPOINTS.PPID.DETAIL_DIP, {
+      id_instansi: instansiId,
+      id_content: contentId,
+    });
     return this.fetchData(url);
   }
 
@@ -199,8 +226,18 @@ export class ApiService {
 
   // Generic method for custom categories
   static async getCategory(categorySlug) {
-    const url = `${API_BASE_URL}/category/${categorySlug}/${KODE_INSTANSI}`;
-    return this.fetchData(url);
+    // Try both patterns: /api/<slug>/<id> and /api/category/<slug>/<id>
+    const urlA = `${API_BASE_URL}/${categorySlug}/${KODE_INSTANSI}`;
+    try {
+      return await this.fetchData(urlA);
+    } catch (err) {
+      // If 404 or not found, try the alternate path
+      if (err.message && err.message.includes("404")) {
+        const urlB = `${API_BASE_URL}/category/${categorySlug}/${KODE_INSTANSI}`;
+        return this.fetchData(urlB);
+      }
+      throw err;
+    }
   }
 }
 

@@ -91,8 +91,7 @@ export const Sejarah = () => {
       try {
         setLoading(true);
         const result = await ApiService.getSejarahSingkat();
-        // API mengembalikan struktur: { data: { isi: "...", gambar: "..." } }
-        setData(result.data);
+        setData(ApiService.normalizeObject(result));
       } catch (err) {
         setError(err.message);
         console.error("Error fetching Sejarah:", err);
@@ -190,8 +189,7 @@ export const VisiMisi = () => {
       try {
         setLoading(true);
         const result = await ApiService.getVisiMisi();
-        // API mengembalikan struktur: { data: { isi: "...", gambar: "..." } }
-        setData(result.data);
+        setData(ApiService.normalizeObject(result));
       } catch (err) {
         setError(err.message);
         console.error("Error fetching Visi Misi:", err);
@@ -348,8 +346,7 @@ export const TugasFungsi = () => {
       try {
         setLoading(true);
         const result = await ApiService.getTugasDanFungsi();
-        // API mengembalikan struktur: { data: { isi: "..." } }
-        setData(result.data);
+        setData(ApiService.normalizeObject(result));
       } catch (err) {
         setError(err.message);
         console.error("Error fetching Tugas dan Fungsi:", err);
@@ -493,8 +490,7 @@ export const StrukturOrganisasi = () => {
       try {
         setLoading(true);
         const result = await ApiService.getStrukturOrganisasi();
-        // API mengembalikan struktur: { data: { isi: "...", gambar: "..." } }
-        setData(result.data);
+        setData(ApiService.normalizeObject(result));
       } catch (err) {
         setError(err.message);
         console.error("Error fetching Struktur Organisasi:", err);
