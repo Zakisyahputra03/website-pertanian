@@ -105,12 +105,27 @@ export const FotoActivities = () => {
         const result = await ApiService.getGaleriFoto();
         const photosData = ApiService.normalizeList(result);
         // Map API fields to component fields
-        const mappedPhotos = photosData.map((item, index) => ({
-          id: item.id || index + 1,
-          url: item.image || item.url || item.foto || item.gambar || null,
-          title: item.title || item.judul || item.caption || "Foto Kegiatan",
-          cat: item.category || item.kategori || " Kegiatan",
-        }));
+        const mappedPhotos = photosData.map((item, index) => {
+          // API mengembalikan field 'cover' dengan path relatif
+          const rawUrl =
+            item.cover ||
+            item.image ||
+            item.url ||
+            item.foto ||
+            item.gambar ||
+            null;
+          // Gabungkan dengan base URL jika path relatif
+          const fullUrl =
+            rawUrl && rawUrl.startsWith("/")
+              ? `https://api-web.sumbarprov.go.id${rawUrl}`
+              : rawUrl;
+          return {
+            id: item.id || item.slug || index + 1,
+            url: fullUrl,
+            title: item.title || item.judul || item.caption || "Foto Kegiatan",
+            cat: item.category || item.kategori || "Kegiatan",
+          };
+        });
         setPhotos(mappedPhotos);
       } catch (err) {
         setError(err.message);

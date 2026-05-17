@@ -18,16 +18,32 @@ const formatSlug = (slug) => {
   return slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-const normalizeItem = (item) => ({
-  title: item.title || item.judul || item.nama || item.name || "Dokumen",
-  category: item.category || item.kategori || item.tipe || "Dokumen",
-  description:
-    item.description || item.deskripsi || item.summary || item.isi || "",
-  fileUrl: item.file_url || item.file || item.url || item.link || "#",
-  date: item.date || item.tanggal || item.created_at || "-",
-  size: item.size || item.file_size || item.ukuran || "-",
-  type: (item.type || item.format || item.tipe || "PDF").toUpperCase(),
-});
+const normalizeItem = (item) => {
+  const rawFile = item.file_url || item.file || item.url || item.link || item.cover || "#";
+  // Jika path relatif dari API, tambahkan base URL
+  const fileUrl =
+    rawFile && rawFile !== "#" && rawFile.startsWith("/")
+      ? `https://api-web.sumbarprov.go.id${rawFile}`
+      : rawFile;
+
+  const rawCover = item.cover || item.gambar || item.image || item.thumbnail || null;
+  const coverUrl =
+    rawCover && rawCover.startsWith("/")
+      ? `https://api-web.sumbarprov.go.id${rawCover}`
+      : rawCover;
+
+  return {
+    title: item.title || item.judul || item.nama || item.name || "Dokumen",
+    category: item.category || item.kategori || item.tipe || "Dokumen",
+    description: item.description || item.deskripsi || item.summary || item.isi || "",
+    fileUrl,
+    coverUrl,
+    date: item.date || item.tanggal || item.created_at || "-",
+    size: item.size || item.file_size || item.ukuran || "-",
+    type: (item.type || item.format || item.tipe || "PDF").toUpperCase(),
+  };
+};
+
 
 const CategoryPage = () => {
   const { slug } = useParams();
