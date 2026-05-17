@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -27,6 +27,8 @@ import {
   VisiMisi,
   TugasFungsi,
   StrukturOrganisasi,
+  LHKPN,
+  ProfilPejabat,
 } from "./components/ProfilPages";
 import {
   Penyuluhan,
@@ -183,16 +185,8 @@ function AppContent() {
         <Route path="/kategori/:slug" element={<CategoryPage />} />
         <Route path="/kategori" element={<AllCategories />} />
         <Route path="/halaman/:slug" element={<GenericPage />} />
-        <Route
-          path="/profil/lhkpn"
-          element={<GenericPage slug="lhkpn" pageTitle="LHKPN" />}
-        />
-        <Route
-          path="/profil/profil-pejabat"
-          element={
-            <GenericPage slug="profil-pejabat" pageTitle="Profil Pejabat" />
-          }
-        />
+        <Route path="/profil/lhkpn" element={<LHKPN />} />
+        <Route path="/profil/profil-pejabat" element={<ProfilPejabat />} />
         <Route
           path="/galeri"
           element={<Navigate to="/galeri/foto" replace />}
