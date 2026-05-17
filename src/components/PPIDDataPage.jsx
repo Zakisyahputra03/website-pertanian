@@ -77,6 +77,7 @@ const PPIDDataPage = () => {
   const handleInstansiSelect = (instansi) => {
     setSelectedInstansi(instansi);
     setSelectedCategory(null);
+    setSelectedDetail(null);
     setClusterData([]);
   };
 
@@ -240,97 +241,111 @@ const PPIDDataPage = () => {
                 <div className="ppid-data-section">
                   <h3>Data {selectedCategory.nama || selectedCategory.name}</h3>
                   <div className="ppid-data-grid">
-                  {clusterData.map((item, index) => (
-                    <div key={item.id || index} className="ppid-data-card">
-                      <div className="ppid-data-header">
-                        <h4>
-                          {item.judul || item.title || `Data ${index + 1}`}
-                        </h4>
-                        <span className="ppid-data-date">
-                          {item.tanggal ||
-                            item.created_at ||
-                            "Tanggal tidak tersedia"}
-                        </span>
+                    {clusterData.map((item, index) => (
+                      <div key={item.id || index} className="ppid-data-card">
+                        <div className="ppid-data-header">
+                          <h4>
+                            {item.judul || item.title || `Data ${index + 1}`}
+                          </h4>
+                          <span className="ppid-data-date">
+                            {item.tanggal ||
+                              item.created_at ||
+                              "Tanggal tidak tersedia"}
+                          </span>
+                        </div>
+                        <div className="ppid-data-content">
+                          <p>
+                            {item.deskripsi || item.description || item.excerpt}
+                          </p>
+                        </div>
+                        <div className="ppid-data-actions">
+                          {item.id_content && (
+                            <button
+                              className="ppid-detail-btn"
+                              onClick={() => handleShowDetail(item)}
+                            >
+                              <Eye size={16} />
+                              Lihat Detail
+                            </button>
+                          )}
+                          {item.file_url && (
+                            <a
+                              href={item.file_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="ppid-download-btn"
+                            >
+                              <Download size={16} />
+                              Unduh
+                            </a>
+                          )}
+                        </div>
                       </div>
-                      <div className="ppid-data-content">
+                    ))}
+                  </div>
+                </div>
+
+                {(detailLoading || selectedDetail) && (
+                  <div className="ppid-detail-panel reveal">
+                    <h3>Detail Informasi Publik</h3>
+                    {detailLoading ? (
+                      <div className="loading-container">
+                        <Loader className="loading-spinner" />
+                        <p>Memuat detail...</p>
+                      </div>
+                    ) : selectedDetail ? (
+                      <div className="ppid-detail-content">
                         <p>
-                          {item.deskripsi || item.description || item.excerpt}
+                          <strong>Judul:</strong>{" "}
+                          {selectedDetail.judul ||
+                            selectedDetail.title ||
+                            selectedDetail.nama}
                         </p>
-                      </div>
-                      <div className="ppid-data-actions">
-                        {item.id_content && (
-                          <button
-                            className="ppid-detail-btn"
-                            onClick={() => handleShowDetail(item)}
-                          >
-                            <Eye size={16} />
-                            Lihat Detail
-                          </button>
-                        )}
-                        {item.file_url && (
+                        <p>
+                          <strong>Tanggal:</strong>{" "}
+                          {selectedDetail.tanggal ||
+                            selectedDetail.created_at ||
+                            selectedDetail.date ||
+                            "Tidak tersedia"}
+                        </p>
+                        <p>
+                          <strong>Status:</strong>{" "}
+                          {selectedDetail.status ||
+                            selectedDetail.keterangan ||
+                            "Tidak tersedia"}
+                        </p>
+                        <div
+                          className="ppid-detail-body"
+                          dangerouslySetInnerHTML={{
+                            __html:
+                              selectedDetail.isi ||
+                              selectedDetail.description ||
+                              selectedDetail.content ||
+                              selectedDetail.deskripsi ||
+                              "<p>Detail informasi tidak tersedia.</p>",
+                          }}
+                        />
+                        {(selectedDetail.file_url ||
+                          selectedDetail.file ||
+                          selectedDetail.link) && (
                           <a
-                            href={item.file_url}
+                            href={
+                              selectedDetail.file_url ||
+                              selectedDetail.file ||
+                              selectedDetail.link
+                            }
                             target="_blank"
                             rel="noopener noreferrer"
                             className="ppid-download-btn"
                           >
-                            <Download size={16} />
-                            Unduh
+                            <Download size={16} /> Unduh Lampiran
                           </a>
                         )}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {(detailLoading || selectedDetail) && (
-                <div className="ppid-detail-panel reveal">
-                  <h3>Detail Informasi Publik</h3>
-                  {detailLoading ? (
-                    <div className="loading-container">
-                      <Loader className="loading-spinner" />
-                      <p>Memuat detail...</p>
-                    </div>
-                  ) : selectedDetail ? (
-                    <div className="ppid-detail-content">
-                      <p>
-                        <strong>Judul:</strong>{" "}
-                        {selectedDetail.judul || selectedDetail.title || selectedDetail.nama}
-                      </p>
-                      <p>
-                        <strong>Tanggal:</strong>{" "}
-                        {selectedDetail.tanggal || selectedDetail.created_at || selectedDetail.date || "Tidak tersedia"}
-                      </p>
-                      <p>
-                        <strong>Status:</strong>{" "}
-                        {selectedDetail.status || selectedDetail.keterangan || "Tidak tersedia"}
-                      </p>
-                      <div
-                        className="ppid-detail-body"
-                        dangerouslySetInnerHTML={{
-                          __html:
-                            selectedDetail.isi ||
-                            selectedDetail.description ||
-                            selectedDetail.content ||
-                            selectedDetail.deskripsi ||
-                            "<p>Detail informasi tidak tersedia.</p>",
-                        }}
-                      />
-                      {(selectedDetail.file_url || selectedDetail.file || selectedDetail.link) && (
-                        <a
-                          href={selectedDetail.file_url || selectedDetail.file || selectedDetail.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="ppid-download-btn"
-                        >
-                          <Download size={16} /> Unduh Lampiran
-                        </a>
-                      )}
-                    </div>
-                  ) : null}
-                </div>
-              )}
+                    ) : null}
+                  </div>
+                )}
+              </>
             )}
 
             {selectedCategory && !loading && clusterData.length === 0 && (
