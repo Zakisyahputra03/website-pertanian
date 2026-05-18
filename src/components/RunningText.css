@@ -87,13 +87,18 @@
   align-items: center;
   white-space: nowrap;
   width: max-content;
-  /* Ensure track spans full width of content */
-  animation: marquee 50s linear infinite;
   will-change: transform;
+  animation: floatTrack 2.2s ease-in-out infinite alternate;
 }
 
-.marquee-track:hover {
-  animation-play-state: paused;
+@keyframes floatTrack {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-12px);
+  }
 }
 
 .marquee-item {
@@ -107,16 +112,16 @@
   /* Consistent spacing */
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  animation: floatItem 3.4s ease-in-out infinite alternate;
 }
 
-@keyframes marquee {
+@keyframes floatItem {
   0% {
-    transform: translate3d(0, 0, 0);
+    transform: translateY(0);
   }
 
   100% {
-    /* Move by exactly 1/10th (one set) to loop perfectly back to start */
-    transform: translate3d(-10%, 0, 0);
+    transform: translateY(-4px);
   }
 }
 
