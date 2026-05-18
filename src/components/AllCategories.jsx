@@ -219,13 +219,22 @@ const AllCategories = () => {
           })}
         </div>
 
-        {/* Empty State */}
         {filteredCategories.length === 0 && (
           <div className="categories-empty-state">
-            <p>Tidak ada kategori yang sesuai dengan pencarian Anda</p>
-            <button onClick={() => setSearchTerm("")} className="reset-search">
-              Hapus Filter
-            </button>
+            <p>
+              {searchTerm
+                ? "Tidak ada kategori yang cocok dengan pencarian kamu."
+                : "Tidak ada kategori yang sesuai saat ini."}
+            </p>
+            {searchTerm && (
+              <button
+                type="button"
+                className="reset-search"
+                onClick={() => setSearchTerm("")}
+              >
+                Bersihkan pencarian
+              </button>
+            )}
           </div>
         )}
       </div>

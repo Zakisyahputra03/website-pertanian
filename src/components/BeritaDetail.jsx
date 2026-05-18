@@ -81,7 +81,7 @@ const BeritaDetail = () => {
     title: "Berita tidak tersedia",
     date: "Tanggal tidak tersedia",
     tag: "Berita",
-    image: "/placeholder-news.jpg",
+    image: "/placeholder-news.svg",
     content: "",
   };
 
@@ -145,7 +145,7 @@ const BeritaDetail = () => {
               src={
                 currentArticle.image ||
                 currentArticle.thumbnail ||
-                "/placeholder-news.jpg"
+                "/placeholder-news.svg"
               }
               alt={currentArticle.title}
               className="featured-image"

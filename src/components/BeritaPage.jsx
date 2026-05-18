@@ -141,7 +141,7 @@ const BeritaPage = () => {
                       item.image ||
                       item.thumbnail ||
                       item.foto ||
-                      "/placeholder-news.jpg"
+                      "/placeholder-news.svg"
                     }
                     alt={item.title || item.judul}
                   />
