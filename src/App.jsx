@@ -21,7 +21,7 @@ import SearchPage from "./components/SearchPage";
 import RunningText from "./components/RunningText";
 import TransparansiStats from "./components/TransparansiStats";
 import PublikPortal from "./components/PublikPortal";
-import EventCalendar from "./components/EventCalendar";
+import InfographicsViewer from "./components/InfographicsViewer";
 import {
   Sejarah,
   VisiMisi,
@@ -83,7 +83,7 @@ const Home = () => (
     </section>
 
     <section className="home-section reveal reveal-up">
-      <EventCalendar />
+      <InfographicsViewer />
     </section>
 
     <section className="home-section-alt reveal reveal-up">

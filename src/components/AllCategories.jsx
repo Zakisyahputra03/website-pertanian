@@ -6,7 +6,6 @@ import {
   Video,
   Bell,
   Download,
-  PieChart,
   FileText,
   CheckSquare,
   Zap,
@@ -54,20 +53,6 @@ const categories = [
     description: "Dokumen resmi dan file yang dapat diunduh",
     icon: Download,
     color: "green",
-  },
-  {
-    slug: "infografis",
-    label: "Infografis",
-    description: "Data visual dan statistik pertanian",
-    icon: PieChart,
-    color: "cyan",
-  },
-  {
-    slug: "laporan-kinerja-instansi-pemerintah",
-    label: "Laporan Kinerja",
-    description: "Laporan kinerja bulanan dan tahunan",
-    icon: BarChart3,
-    color: "indigo",
   },
   {
     slug: "perjanjian-kinerja",
