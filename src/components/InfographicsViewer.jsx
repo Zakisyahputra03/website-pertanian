@@ -78,7 +78,13 @@ const InfographicsViewer = () => {
               {/* Infografis Images Grid */}
               {infografisItems.length > 0 && (
                 <div className="infografis-gallery">
-                  <h3>Infografis Terkini</h3>
+                  <div className="gallery-header">
+                    <h3>Infografis Terkini</h3>
+                    <p>
+                      Pratinjau singkat visualisasi data terkini dalam satu
+                      tampilan sederhana.
+                    </p>
+                  </div>
                   <div className="gallery-grid">
                     {infografisItems.slice(0, 3).map((item, idx) => (
                       <div key={idx} className="gallery-item">
@@ -112,11 +118,11 @@ const InfographicsViewer = () => {
                 <div className="footer-stat">
                   <TrendingUp size={20} />
                   <div>
-                    <span className="stat-label">Total Dokumen</span>
+                    <span className="stat-label">Jumlah Infografis</span>
                     <span className="stat-value">{infografisItems.length}</span>
                   </div>
                 </div>
-                <Link to="/kategori" className="view-more-btn">
+                <Link to="/kategori/infografis" className="view-more-btn">
                   Lihat Selengkapnya <ArrowUpRight size={18} />
                 </Link>
               </div>

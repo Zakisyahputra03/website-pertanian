@@ -34,24 +34,18 @@ const Navbar = ({ scrolled }) => {
       name: t("nav_profile"),
       path: "/profil",
       dropdown: [
-        { name: t("nav_profile_history"), path: "/profil/sejarah" },
-        { name: t("nav_profile_vision"), path: "/profil/visi-misi" },
-        { name: t("nav_profile_tasks"), path: "/profil/tugas-fungsi" },
-        { name: t("nav_profile_structure"), path: "/profil/struktur" },
+        { name: t("nav_profile_history"), path: "/halaman/sejarah-singkat" },
+        { name: t("nav_profile_vision"), path: "/halaman/visi-misi" },
+        { name: t("nav_profile_tasks"), path: "/halaman/tugas-dan-fungsi" },
+        {
+          name: t("nav_profile_structure"),
+          path: "/halaman/struktur-organisasi",
+        },
+        { name: "LHKPN", path: "/halaman/lhkpn" },
+        { name: "Profil Pejabat", path: "/halaman/profil-pejabat" },
       ],
     },
-    {
-      name: t("nav_services"),
-      path: "/layanan",
-      dropdown: [
-        { name: t("nav_services_extension"), path: "/layanan/penyuluhan" },
-        { name: t("nav_services_licensing"), path: "/layanan/perizinan" },
-        { name: t("nav_services_seeds"), path: "/layanan/bibit" },
-        { name: t("nav_services_training"), path: "/layanan/pelatihan" },
-      ],
-    },
-    { name: t("nav_news"), path: "/berita" },
-    { name: "Kategori", path: "/kategori" },
+    { name: "BERITA PUBLIKASI", path: "/berita" },
     {
       name: t("nav_ppid"),
       path: "/ppid",
@@ -70,6 +64,8 @@ const Navbar = ({ scrolled }) => {
         { name: t("nav_gallery_videos"), path: "/galeri/video" },
       ],
     },
+    { name: "PENGUMUMAN BIDANG", path: "/pengumuman" },
+    { name: t("nav_contact"), path: "/faq" },
   ];
 
   return (

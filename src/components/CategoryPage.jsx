@@ -109,6 +109,7 @@ const CategoryPage = () => {
   const [previewTitle, setPreviewTitle] = useState("");
   const [sortBy, setSortBy] = useState("date-desc");
   const [selectedTypes, setSelectedTypes] = useState([]);
+  const isInfografis = slug === "infografis";
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -190,13 +191,17 @@ const CategoryPage = () => {
           <div className="category-hero-content">
             <div className="category-hero-badge">
               <FileText size={12} />
-              Repositori Dokumen
+              {isInfografis ? "Visualisasi Data" : "Repositori Dokumen"}
             </div>
-            <h1>{formatSlug(slug)}</h1>
+            <h1>
+              {isInfografis ? "Infografis Pertanian Sumbar" : formatSlug(slug)}
+            </h1>
             <p>
-              Kumpulan dokumen resmi dan informasi terkait{" "}
-              {formatSlug(slug).toLowerCase()} Dinas Pertanian Provinsi Sumatera
-              Barat.
+              {isInfografis
+                ? "Kumpulan infografis visualisasi data produksi, luas tanam, dan indikator pertanian Sumatera Barat."
+                : `Kumpulan dokumen resmi dan informasi terkait ${formatSlug(
+                    slug,
+                  ).toLowerCase()} Dinas Pertanian Provinsi Sumatera Barat.`}
             </p>
           </div>
         </div>
@@ -302,7 +307,79 @@ const CategoryPage = () => {
         )}
 
         {/* Document Grid */}
-        {!loading && !error && (
+        {!loading && !error && isInfografis && (
+          <div className="infografis-full-view">
+            {paginatedItems.length > 0 ? (
+              <div className="infografis-grid">
+                {paginatedItems.map((item, index) => (
+                  <div
+                    key={`${item.title}-${index}`}
+                    className="infografis-card"
+                  >
+                    <div className="infografis-card-thumb">
+                      {item.coverUrl ? (
+                        <img
+                          src={item.coverUrl}
+                          alt={item.title}
+                          onError={(e) => {
+                            e.target.src =
+                              "https://via.placeholder.com/420x280?text=Infografis";
+                          }}
+                        />
+                      ) : (
+                        <div className="infografis-placeholder">
+                          <FolderOpen size={32} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="infografis-card-body">
+                      <h3>{item.title}</h3>
+                      <div className="doc-meta-row">
+                        {item.date && item.date !== "-" && (
+                          <div className="doc-meta-item">
+                            <Calendar size={12} />
+                            <span>{item.date}</span>
+                          </div>
+                        )}
+                      </div>
+                      <p>{stripHtml(item.description)}</p>
+                      <div className="infografis-card-actions">
+                        <button
+                          onClick={() => openPreview(item.fileUrl, item.title)}
+                          className="btn-preview-doc"
+                        >
+                          <Eye size={15} />
+                          Lihat
+                        </button>
+                        <a
+                          href={item.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-download-doc"
+                        >
+                          <Download size={15} />
+                          Unduh
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-empty-state">
+                <FolderOpen size={72} />
+                <h3>Belum ada infografis</h3>
+                <p>
+                  {searchTerm
+                    ? `Tidak ada hasil untuk "${searchTerm}"`
+                    : `Infografis untuk kategori ${formatSlug(slug)} belum tersedia. Silakan cek kembali nanti.`}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {!loading && !error && !isInfografis && (
           <>
             <div className="category-grid-page">
               {paginatedItems.length > 0 ? (
