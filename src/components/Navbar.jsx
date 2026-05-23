@@ -46,6 +46,7 @@ const Navbar = ({ scrolled }) => {
       ],
     },
     { name: "BERITA PUBLIKASI", path: "/berita" },
+    { name: "Kategori", path: "/kategori" },
     {
       name: t("nav_ppid"),
       path: "/ppid",

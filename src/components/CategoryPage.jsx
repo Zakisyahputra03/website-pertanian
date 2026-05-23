@@ -12,6 +12,8 @@ import {
   AlertCircle,
   FolderOpen,
   Filter,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import ApiService from "../services/apiService";
 import "./CategoryPage.css";
@@ -109,6 +111,7 @@ const CategoryPage = () => {
   const [previewTitle, setPreviewTitle] = useState("");
   const [sortBy, setSortBy] = useState("date-desc");
   const [selectedTypes, setSelectedTypes] = useState([]);
+  const [viewMode, setViewMode] = useState("grid");
   const isInfografis = slug === "infografis";
 
   useEffect(() => {
@@ -235,6 +238,25 @@ const CategoryPage = () => {
               <option value="title-desc">Judul Z-A</option>
             </select>
           </div>
+          <div className="control-divider" />
+          <div className="view-toggle-wrap">
+            <button
+              className={`view-toggle-btn ${viewMode === "grid" ? "active" : ""}`}
+              onClick={() => setViewMode("grid")}
+              title="Tampilan Grid"
+              aria-label="Tampilan Grid"
+            >
+              <LayoutGrid size={16} />
+            </button>
+            <button
+              className={`view-toggle-btn ${viewMode === "list" ? "active" : ""}`}
+              onClick={() => setViewMode("list")}
+              title="Tampilan Daftar"
+              aria-label="Tampilan Daftar"
+            >
+              <List size={16} />
+            </button>
+          </div>
         </div>
 
         {/* Filter Chips */}
@@ -310,61 +332,122 @@ const CategoryPage = () => {
         {!loading && !error && isInfografis && (
           <div className="infografis-full-view">
             {paginatedItems.length > 0 ? (
-              <div className="infografis-grid">
-                {paginatedItems.map((item, index) => (
-                  <div
-                    key={`${item.title}-${index}`}
-                    className="infografis-card"
-                  >
-                    <div className="infografis-card-thumb">
-                      {item.coverUrl ? (
-                        <img
-                          src={item.coverUrl}
-                          alt={item.title}
-                          onError={(e) => {
-                            e.target.src =
-                              "https://via.placeholder.com/420x280?text=Infografis";
-                          }}
-                        />
-                      ) : (
-                        <div className="infografis-placeholder">
-                          <FolderOpen size={32} />
-                        </div>
-                      )}
-                    </div>
-                    <div className="infografis-card-body">
-                      <h3>{item.title}</h3>
-                      <div className="doc-meta-row">
-                        {item.date && item.date !== "-" && (
-                          <div className="doc-meta-item">
-                            <Calendar size={12} />
-                            <span>{item.date}</span>
+              viewMode === "grid" ? (
+                <div className="infografis-grid">
+                  {paginatedItems.map((item, index) => (
+                    <div
+                      key={`${item.title}-${index}`}
+                      className="infografis-card"
+                    >
+                      <div className="infografis-card-thumb">
+                        {item.coverUrl ? (
+                          <img
+                            src={item.coverUrl}
+                            alt={item.title}
+                            onError={(e) => {
+                              e.target.src =
+                                "https://via.placeholder.com/420x280?text=Infografis";
+                            }}
+                          />
+                        ) : (
+                          <div className="infografis-placeholder">
+                            <FolderOpen size={32} />
                           </div>
                         )}
                       </div>
-                      <p>{stripHtml(item.description)}</p>
-                      <div className="infografis-card-actions">
+                      <div className="infografis-card-body">
+                        <h3>{item.title}</h3>
+                        <div className="doc-meta-row">
+                          {item.date && item.date !== "-" && (
+                            <div className="doc-meta-item">
+                              <Calendar size={12} />
+                              <span>{item.date}</span>
+                            </div>
+                          )}
+                        </div>
+                        <p>{stripHtml(item.description)}</p>
+                        <div className="infografis-card-actions">
+                          <button
+                            onClick={() => openPreview(item.fileUrl, item.title)}
+                            className="btn-preview-doc"
+                          >
+                            <Eye size={15} />
+                            Lihat
+                          </button>
+                          <a
+                            href={item.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-download-doc"
+                          >
+                            <Download size={15} />
+                            Unduh
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="infografis-list-container">
+                  {paginatedItems.map((item, index) => (
+                    <div
+                      key={`${item.title}-${index}`}
+                      className="infografis-list-item"
+                    >
+                      <div className="infografis-list-left">
+                        {item.coverUrl ? (
+                          <img
+                            src={item.coverUrl}
+                            alt={item.title}
+                            className="infografis-list-thumb"
+                            onError={(e) => {
+                              e.target.src =
+                                "https://via.placeholder.com/120x80?text=Infografis";
+                            }}
+                          />
+                        ) : (
+                          <div className="infografis-list-placeholder">
+                            <FolderOpen size={20} />
+                          </div>
+                        )}
+                        <div className="infografis-list-details">
+                          <h3>{item.title}</h3>
+                          <p>{stripHtml(item.description)}</p>
+                          <div className="doc-meta-row">
+                            {item.date && item.date !== "-" && (
+                              <div className="doc-meta-item">
+                                <Calendar size={12} />
+                                <span>{item.date}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="infografis-list-right">
                         <button
                           onClick={() => openPreview(item.fileUrl, item.title)}
-                          className="btn-preview-doc"
+                          className="btn-preview-doc-compact"
+                          title="Lihat"
                         >
                           <Eye size={15} />
-                          Lihat
+                          <span>Lihat</span>
                         </button>
                         <a
                           href={item.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn-download-doc"
+                          className="btn-download-doc-compact"
+                          title="Unduh"
                         >
                           <Download size={15} />
-                          Unduh
+                          <span>Unduh</span>
                         </a>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )
             ) : (
               <div className="p-empty-state">
                 <FolderOpen size={72} />
@@ -381,160 +464,224 @@ const CategoryPage = () => {
 
         {!loading && !error && !isInfografis && (
           <>
-            <div className="category-grid-page">
-              {paginatedItems.length > 0 ? (
-                paginatedItems.map((item, index) => (
-                  <div key={`${item.title}-${index}`} className="doc-page-card">
-                    {/* Cover Image (if any) */}
-                    {item.coverUrl && (
-                      <img
-                        src={item.coverUrl}
-                        alt={item.title}
-                        className="doc-cover-image"
-                        data-coverraw={item.coverRaw || ""}
-                        data-tried={0}
-                        onError={(e) => {
-                          try {
-                            const img = e.target;
-                            const tried = Number(img.dataset.tried || 0);
-                            const raw = img.dataset.coverraw || "";
-                            const src = img.src || "";
-                            const candidates = [];
+            {paginatedItems.length > 0 ? (
+              viewMode === "grid" ? (
+                <div className="category-grid-page">
+                  {paginatedItems.map((item, index) => (
+                    <div key={`${item.title}-${index}`} className="doc-page-card">
+                      {/* Cover Image (if any) */}
+                      {item.coverUrl && (
+                        <img
+                          src={item.coverUrl}
+                          alt={item.title}
+                          className="doc-cover-image"
+                          data-coverraw={item.coverRaw || ""}
+                          data-tried={0}
+                          onError={(e) => {
+                            try {
+                              const img = e.target;
+                              const tried = Number(img.dataset.tried || 0);
+                              const raw = img.dataset.coverraw || "";
+                              const src = img.src || "";
+                              const candidates = [];
 
-                            // If raw looks like protocol-relative
-                            if (raw.startsWith("//"))
-                              candidates.push(`https:${raw}`);
-                            // If raw starts with single slash
-                            if (raw.startsWith("/"))
-                              candidates.push(
-                                `https://api-web.sumbarprov.go.id${raw}`,
-                              );
-                            // If raw is relative path (no protocol, no leading slash)
-                            if (
-                              raw &&
-                              !raw.startsWith("http") &&
-                              !raw.startsWith("/")
-                            )
-                              candidates.push(
-                                `https://api-web.sumbarprov.go.id/${raw}`,
-                              );
-                            // Try swapping api-web host variants
-                            if (src.includes("api-web.sumbarprov.go.id")) {
-                              candidates.push(
-                                src.replace(
-                                  "api-web.sumbarprov.go.id",
-                                  "sumbarprov.go.id",
-                                ),
-                              );
-                              candidates.push(
-                                src.replace(
-                                  "api-web.sumbarprov.go.id",
-                                  "www.sumbarprov.go.id",
-                                ),
-                              );
+                              // If raw looks like protocol-relative
+                              if (raw.startsWith("//"))
+                                candidates.push(`https:${raw}`);
+                              // If raw starts with single slash
+                              if (raw.startsWith("/"))
+                                candidates.push(
+                                  `https://api-web.sumbarprov.go.id${raw}`,
+                                );
+                              // If raw is relative path (no protocol, no leading slash)
+                              if (
+                                raw &&
+                                !raw.startsWith("http") &&
+                                !raw.startsWith("/")
+                              )
+                                candidates.push(
+                                  `https://api-web.sumbarprov.go.id/${raw}`,
+                                );
+                              // Try swapping api-web host variants
+                              if (src.includes("api-web.sumbarprov.go.id")) {
+                                candidates.push(
+                                  src.replace(
+                                    "api-web.sumbarprov.go.id",
+                                    "sumbarprov.go.id",
+                                  ),
+                                );
+                                candidates.push(
+                                  src.replace(
+                                    "api-web.sumbarprov.go.id",
+                                    "www.sumbarprov.go.id",
+                                  ),
+                                );
+                              }
+                              // Try toggling https/http
+                              if (src.startsWith("https://"))
+                                candidates.push(
+                                  src.replace("https://", "http://"),
+                                );
+                              if (src.startsWith("http://"))
+                                candidates.push(
+                                  src.replace("http://", "https://"),
+                                );
+
+                              // remove duplicates
+                              const uniq = [
+                                ...new Set(candidates.filter(Boolean)),
+                              ];
+
+                              if (tried < uniq.length) {
+                                img.dataset.tried = tried + 1;
+                                img.src = uniq[tried];
+                              } else {
+                                img.style.display = "none";
+                              }
+                            } catch (err) {
+                              e.target.style.display = "none";
                             }
-                            // Try toggling https/http
-                            if (src.startsWith("https://"))
-                              candidates.push(
-                                src.replace("https://", "http://"),
-                              );
-                            if (src.startsWith("http://"))
-                              candidates.push(
-                                src.replace("http://", "https://"),
-                              );
+                          }}
+                        />
+                      )}
 
-                            // remove duplicates
-                            const uniq = [
-                              ...new Set(candidates.filter(Boolean)),
-                            ];
+                      <div className="doc-card-inner">
+                        {/* Badges */}
+                        <div className="doc-card-top">
+                          <span
+                            className={`doc-type-badge ${item.type.toLowerCase()}`}
+                          >
+                            <Download size={11} />
+                            {item.type}
+                          </span>
+                          <span className="doc-cat">{item.category}</span>
+                        </div>
 
-                            if (tried < uniq.length) {
-                              img.dataset.tried = tried + 1;
-                              img.src = uniq[tried];
-                            } else {
-                              img.style.display = "none";
-                            }
-                          } catch (err) {
-                            e.target.style.display = "none";
-                          }
-                        }}
-                      />
-                    )}
+                        {/* Body */}
+                        <div className="doc-card-body">
+                          <h3>{item.title}</h3>
 
-                    <div className="doc-card-inner">
-                      {/* Badges */}
-                      <div className="doc-card-top">
-                        <span
-                          className={`doc-type-badge ${item.type.toLowerCase()}`}
-                        >
-                          <Download size={11} />
-                          {item.type}
-                        </span>
-                        <span className="doc-cat">{item.category}</span>
-                      </div>
+                          <div className="doc-meta-row">
+                            {item.date && item.date !== "-" && (
+                              <div className="doc-meta-item">
+                                <Calendar size={12} />
+                                <span>{item.date}</span>
+                              </div>
+                            )}
+                            {item.size && item.size !== "-" && (
+                              <div className="doc-meta-item">
+                                <HardDrive size={12} />
+                                <span>{item.size}</span>
+                              </div>
+                            )}
+                          </div>
 
-                      {/* Body */}
-                      <div className="doc-card-body">
-                        <h3>{item.title}</h3>
-
-                        <div className="doc-meta-row">
-                          {item.date && item.date !== "-" && (
-                            <div className="doc-meta-item">
-                              <Calendar size={12} />
-                              <span>{item.date}</span>
-                            </div>
-                          )}
-                          {item.size && item.size !== "-" && (
-                            <div className="doc-meta-item">
-                              <HardDrive size={12} />
-                              <span>{item.size}</span>
-                            </div>
+                          {item.description && (
+                            <p>{stripHtml(item.description)}</p>
                           )}
                         </div>
 
-                        {item.description && (
-                          <p>{stripHtml(item.description)}</p>
-                        )}
+                        <div className="doc-card-divider" />
+
+                        {/* Actions */}
+                        <div className="doc-card-actions">
+                          <button
+                            onClick={() => openPreview(item.fileUrl, item.title)}
+                            className="btn-preview-doc"
+                          >
+                            <Eye size={15} />
+                            Preview
+                          </button>
+                          <a
+                            href={item.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-download-doc"
+                          >
+                            <Download size={15} />
+                            Unduh
+                          </a>
+                        </div>
                       </div>
-
-                      <div className="doc-card-divider" />
-
-                      {/* Actions */}
-                      <div className="doc-card-actions">
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="category-list-page">
+                  {paginatedItems.map((item, index) => (
+                    <div
+                      key={`${item.title}-${index}`}
+                      className="doc-page-list-item"
+                    >
+                      <div className="doc-list-left">
+                        <div className="doc-list-badge-wrap">
+                          <span
+                            className={`doc-type-badge ${item.type.toLowerCase()}`}
+                          >
+                            {item.type}
+                          </span>
+                        </div>
+                        <div className="doc-list-details">
+                          <h3>{item.title}</h3>
+                          {item.description && (
+                            <p className="doc-list-desc">
+                              {stripHtml(item.description)}
+                            </p>
+                          )}
+                          <div className="doc-meta-row">
+                            <span className="doc-cat-tag">{item.category}</span>
+                            {item.date && item.date !== "-" && (
+                              <div className="doc-meta-item">
+                                <Calendar size={12} />
+                                <span>{item.date}</span>
+                              </div>
+                            )}
+                            {item.size && item.size !== "-" && (
+                              <div className="doc-meta-item">
+                                <HardDrive size={12} />
+                                <span>{item.size}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="doc-list-right">
                         <button
                           onClick={() => openPreview(item.fileUrl, item.title)}
-                          className="btn-preview-doc"
+                          className="btn-preview-doc-compact"
+                          title="Preview Dokumen"
                         >
                           <Eye size={15} />
-                          Preview
+                          <span>Preview</span>
                         </button>
                         <a
                           href={item.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn-download-doc"
+                          className="btn-download-doc-compact"
+                          title="Unduh Dokumen"
                         >
                           <Download size={15} />
-                          Unduh
+                          <span>Unduh</span>
                         </a>
                       </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-empty-state">
-                  <FolderOpen size={72} />
-                  <h3>Belum ada dokumen</h3>
-                  <p>
-                    {searchTerm
-                      ? `Tidak ada hasil untuk "${searchTerm}"`
-                      : selectedTypes.length > 0
-                        ? `Tidak ada file dengan tipe: ${selectedTypes.join(", ")}`
-                        : `Dokumen untuk kategori ${formatSlug(slug)} belum tersedia. Silakan cek kembali nanti.`}
-                  </p>
+                  ))}
                 </div>
-              )}
-            </div>
+              )
+            ) : (
+              <div className="p-empty-state">
+                <FolderOpen size={72} />
+                <h3>Belum ada dokumen</h3>
+                <p>
+                  {searchTerm
+                    ? `Tidak ada hasil untuk "${searchTerm}"`
+                    : selectedTypes.length > 0
+                      ? `Tidak ada file dengan tipe: ${selectedTypes.join(", ")}`
+                      : `Dokumen untuk kategori ${formatSlug(slug)} belum tersedia. Silakan cek kembali nanti.`}
+                </p>
+              </div>
+            )}
 
             {/* Pagination */}
             {totalPages > 1 && (
