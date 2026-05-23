@@ -19,34 +19,9 @@ import {
 import "./AllCategories.css";
 
 const categories = [
-  {
-    slug: "berita-utama",
-    label: "Berita Utama",
-    description: "Berita dan informasi terkini dari Dinas Pertanian",
-    icon: Newspaper,
-    color: "blue",
-  },
-  {
-    slug: "galery-foto",
-    label: "Galeri Foto",
-    description: "Dokumentasi visual kegiatan dan program pertanian",
-    icon: Image,
-    color: "purple",
-  },
-  {
-    slug: "galery-video",
-    label: "Galeri Video",
-    description: "Video dokumentasi dan rekaman kegiatan",
-    icon: Video,
-    color: "red",
-  },
-  {
-    slug: "pengumuman",
-    label: "Pengumuman",
-    description: "Pengumuman penting untuk publik",
-    icon: Bell,
-    color: "orange",
-  },
+
+
+
   {
     slug: "download",
     label: "Unduhan / Dokumen",
