@@ -155,7 +155,7 @@ const AllCategories = () => {
         </header>
 
         {/* Grid Kategori */}
-        <div className="categories-grid">
+        <main className="categories-grid">
           {filteredCategories.map((c) => {
             const IconComponent = c.icon;
             return (
@@ -177,7 +177,7 @@ const AllCategories = () => {
               </Link>
             );
           })}
-        </div>
+        </main>
 
         {filteredCategories.length === 0 && (
           <div className="categories-empty-state">
