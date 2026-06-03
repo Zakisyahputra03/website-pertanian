@@ -1,8 +1,13 @@
 // API Configuration and Services for Dinas Perkebunan Website
 
 // Base URLs - URL absolut untuk production di manage.sumbarprov.go.id
-export const API_BASE_URL = "https://api-web.sumbarprov.go.id/api";
-export const PPID_BASE_URL = "https://ppid.sumbarprov.go.id/api";
+export const API_BASE_URL = import.meta.env.DEV 
+  ? "/api" 
+  : "https://api-web.sumbarprov.go.id/api";
+
+export const PPID_BASE_URL = import.meta.env.DEV 
+  ? "/ppid" 
+  : "https://ppid.sumbarprov.go.id/api";
 
 // Kode Instansi untuk Dinas Perkebunan
 export const KODE_INSTANSI = "2654";
