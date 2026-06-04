@@ -9,9 +9,9 @@ import {
   LogOut,
   Settings,
   HelpCircle,
+  Cloud,
 } from "lucide-react";
 import logo from "../assets/Emblem of West Sumat.png";
-import WeatherWidget from "./WeatherWidget";
 import "./Navbar.css";
 
 import { useLanguage } from "../context/LanguageContext";
@@ -119,7 +119,6 @@ const Navbar = ({ scrolled }) => {
         {/* Right Actions */}
         <div className="nav-actions">
           <div className="nav-utils">
-            <WeatherWidget />
             <div className="lang-flags">
               <button
                 className={`flag-btn ${language === "id" ? "active" : ""}`}
@@ -142,6 +141,13 @@ const Navbar = ({ scrolled }) => {
               <Link to="/faq" className="util-link">
                 {t("faq")}
               </Link>
+            </div>
+          </div>
+          <div className="nav-weather">
+            <Cloud size={18} />
+            <div className="nav-weather-copy">
+              <span className="nav-weather-temp">29°C</span>
+              <small>Berawan · Padang</small>
             </div>
           </div>
           <a
