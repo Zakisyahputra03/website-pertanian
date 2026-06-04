@@ -120,6 +120,202 @@ body.dark-mode-active {
   letter-spacing: -0.03em;
 }
 
+.categories-hero-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.hero-highlight-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 2rem;
+  border-radius: 28px;
+  background: var(--all-surface);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--all-border);
+  box-shadow: var(--all-shadow);
+}
+
+.hero-card-top {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.hero-card-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: var(--all-primary-light);
+  color: var(--all-primary);
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.12);
+}
+
+.hero-card-label {
+  display: inline-block;
+  margin-bottom: 0.45rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--all-primary);
+}
+
+.hero-highlight-card h2 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  line-height: 1.05;
+}
+
+.hero-highlight-card p {
+  margin: 0;
+  color: var(--all-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.hero-card-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.95rem 1.4rem;
+  border-radius: 999px;
+  background: var(--all-primary);
+  color: white;
+  font-weight: 800;
+  text-decoration: none;
+  transition: var(--all-transition);
+  box-shadow: 0 12px 28px rgba(22, 163, 74, 0.2);
+}
+
+.hero-card-button:hover {
+  transform: translateY(-1px);
+  background: #15803d;
+}
+
+.category-section {
+  margin-bottom: 3rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.section-label {
+  margin: 0 0 0.65rem;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--all-primary);
+}
+
+.section-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.category-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  min-height: 155px;
+  padding: 1.8rem 1.5rem;
+  border-radius: 26px;
+  background: var(--all-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+  transition: var(--all-transition);
+  text-decoration: none;
+  color: var(--all-text);
+  position: relative;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+}
+
+.category-card-content {
+  min-width: 0;
+}
+
+.category-card-content h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+  line-height: 1.3;
+}
+
+.category-card-content p {
+  margin: 0;
+  color: var(--all-muted);
+  line-height: 1.7;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.category-card-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--all-primary);
+  font-weight: 600;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  border: 1px solid rgba(34, 197, 94, 0.16);
+}
+
+.category-card:hover .category-card-action {
+  background: rgba(22, 163, 74, 0.12);
+}
+
+.category-card-arrow {
+  display: none;
+}
+
+@media (min-width: 720px) {
+  .category-card-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: var(--all-primary-light);
+    color: var(--all-primary);
+    transition: var(--all-transition);
+  }
+
+  .category-card:hover .category-card-arrow {
+    transform: translateX(3px);
+  }
+}
+
+@media (min-width: 980px) {
+  .categories-hero-grid {
+    grid-template-columns: 1.4fr 0.9fr;
+  }
+}
+
 .categories-header-content p {
   font-size: 1.05rem;
   color: var(--all-muted);
