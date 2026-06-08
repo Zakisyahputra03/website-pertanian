@@ -27,24 +27,13 @@ const formatSlug = (slug) => {
 };
 
 const normalizeItem = (item) => {
-  const resolveUrl = (raw) => {
-    if (!raw) return null;
-    const s = String(raw).trim();
-    if (!s) return null;
-    if (s.startsWith("http://") || s.startsWith("https://")) return s;
-    if (s.startsWith("//")) return `https:${s}`;
-    if (s.startsWith("/")) return `https://api-web.sumbarprov.go.id${s}`;
-    // fallback: assume relative path on API host
-    return `https://api-web.sumbarprov.go.id/${s}`;
-  };
-
   const rawFile =
     item.file_url || item.file || item.url || item.link || item.cover || null;
-  const fileUrl = resolveUrl(rawFile);
+  const fileUrl = ApiService.resolveMediaUrl(rawFile);
 
   const rawCover =
     item.cover || item.gambar || item.image || item.thumbnail || null;
-  const coverUrl = resolveUrl(rawCover);
+  const coverUrl = ApiService.resolveMediaUrl(rawCover);
 
   // Detect file type from URL or explicit field
   const rawType = (item.type || item.format || item.tipe || "").toString();
@@ -60,8 +49,8 @@ const normalizeItem = (item) => {
           : lowerFile.includes(".pptx") || lowerFile.includes(".ppt")
             ? "pptx"
             : lowerFile.includes(".jpg") ||
-              lowerFile.includes(".png") ||
-              lowerFile.includes(".jpeg")
+                lowerFile.includes(".png") ||
+                lowerFile.includes(".jpeg")
               ? "jpg"
               : "PDF");
 
@@ -92,8 +81,10 @@ const stripHtml = (html) => {
 const getTypeIcon = (type, size = 14) => {
   const fileType = String(type || "").toLowerCase();
 
-  if (["xlsx", "xls"].includes(fileType)) return <FileSpreadsheet size={size} />;
-  if (["jpg", "jpeg", "png", "webp"].includes(fileType)) return <FileImage size={size} />;
+  if (["xlsx", "xls"].includes(fileType))
+    return <FileSpreadsheet size={size} />;
+  if (["jpg", "jpeg", "png", "webp"].includes(fileType))
+    return <FileImage size={size} />;
   if (["ppt", "pptx"].includes(fileType)) return <Presentation size={size} />;
   return <FileText size={size} />;
 };
@@ -135,7 +126,6 @@ const CategoryPage = () => {
         setItems(list.map(normalizeItem));
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching category data:", err);
       } finally {
         setLoading(false);
       }
@@ -165,7 +155,9 @@ const CategoryPage = () => {
     return 0;
   });
 
-  const fileTypes = [...new Set(items.map((item) => item.type))].filter(Boolean);
+  const fileTypes = [...new Set(items.map((item) => item.type))].filter(
+    Boolean,
+  );
   const totalPages = Math.max(1, Math.ceil(sortedItems.length / itemsPerPage));
   const paginatedItems = sortedItems.slice(
     (currentPage - 1) * itemsPerPage,
@@ -214,21 +206,25 @@ const CategoryPage = () => {
                 {isInfografis ? "Visualisasi Data" : "Repositori Dokumen"}
               </div>
               <h1>
-                {isInfografis ? "Infografis Pertanian Sumbar" : formatSlug(slug)}
+                {isInfografis
+                  ? "Infografis Pertanian Sumbar"
+                  : formatSlug(slug)}
               </h1>
               <p>
                 {isInfografis
                   ? "Kumpulan infografis visualisasi data produksi, luas tanam, dan indikator pertanian Sumatera Barat."
                   : `Kumpulan dokumen resmi dan informasi terkait ${formatSlug(
-                    slug,
-                  ).toLowerCase()} Dinas Pertanian Provinsi Sumatera Barat.`}
+                      slug,
+                    ).toLowerCase()} Dinas Pertanian Provinsi Sumatera Barat.`}
               </p>
             </div>
 
             <div className="category-hero-card">
               <span>Jumlah Data</span>
               <strong>{loading ? "..." : items.length}</strong>
-              <small>{isInfografis ? "infografis tersedia" : "dokumen tersedia"}</small>
+              <small>
+                {isInfografis ? "infografis tersedia" : "dokumen tersedia"}
+              </small>
             </div>
           </div>
         </div>
@@ -296,10 +292,7 @@ const CategoryPage = () => {
               </button>
             ))}
             {selectedTypes.length > 0 && (
-              <button
-                className="filter-chip-clear"
-                onClick={clearFilters}
-              >
+              <button className="filter-chip-clear" onClick={clearFilters}>
                 <X size={13} /> Hapus Filter
               </button>
             )}
@@ -311,7 +304,8 @@ const CategoryPage = () => {
           <div className="category-stats-row">
             <div className="stats-pill">
               <FolderOpen size={14} />
-              Menampilkan <strong>{sortedItems.length}</strong> dari {items.length} data
+              Menampilkan <strong>{sortedItems.length}</strong> dari{" "}
+              {items.length} data
             </div>
             {selectedTypes.length > 0 && (
               <div className="stats-pill">
@@ -354,11 +348,10 @@ const CategoryPage = () => {
                     <div className="infografis-card-thumb">
                       {item.coverUrl ? (
                         <img
-                          src={item.coverUrl}
+                          src={item.coverUrl || "/placeholder-news.svg"}
                           alt={item.title}
                           onError={(e) => {
-                            e.target.src =
-                              "https://via.placeholder.com/420x280?text=Infografis";
+                            e.target.src = "/placeholder-news.svg";
                           }}
                         />
                       ) : (
@@ -380,7 +373,10 @@ const CategoryPage = () => {
                       <p>{stripHtml(item.description)}</p>
                       <div className="infografis-card-actions">
                         <button
-                          onClick={() => item.fileUrl && openPreview(item.fileUrl, item.title)}
+                          onClick={() =>
+                            item.fileUrl &&
+                            openPreview(item.fileUrl, item.title)
+                          }
                           className="btn-preview-doc"
                           disabled={!item.fileUrl}
                         >
@@ -539,7 +535,10 @@ const CategoryPage = () => {
                       {/* Actions */}
                       <div className="doc-card-actions">
                         <button
-                          onClick={() => item.fileUrl && openPreview(item.fileUrl, item.title)}
+                          onClick={() =>
+                            item.fileUrl &&
+                            openPreview(item.fileUrl, item.title)
+                          }
                           className="btn-preview-doc"
                           disabled={!item.fileUrl}
                         >

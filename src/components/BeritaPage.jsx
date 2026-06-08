@@ -31,7 +31,6 @@ const BeritaPage = () => {
         setBeritaData(ApiService.normalizeList(result));
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching berita:", err);
       } finally {
         setLoading(false);
       }
@@ -138,10 +137,13 @@ const BeritaPage = () => {
                 <Link to={`/berita/${item.id || index}`}>
                   <img
                     src={
-                      item.image ||
-                      item.thumbnail ||
-                      item.foto ||
-                      "/placeholder-news.svg"
+                      ApiService.resolveMediaUrl(
+                        item.image ||
+                          item.thumbnail ||
+                          item.foto ||
+                          item.cover ||
+                          item.gambar,
+                      ) || "/placeholder-news.svg"
                     }
                     alt={item.title || item.judul}
                   />

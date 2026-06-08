@@ -36,7 +36,6 @@ const BeritaDetail = () => {
         }
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching berita detail:", err);
       } finally {
         setLoading(false);
       }
@@ -143,9 +142,13 @@ const BeritaDetail = () => {
           <div className="article-img-wrap">
             <img
               src={
-                currentArticle.image ||
-                currentArticle.thumbnail ||
-                "/placeholder-news.svg"
+                ApiService.resolveMediaUrl(
+                  currentArticle.image ||
+                    currentArticle.thumbnail ||
+                    currentArticle.foto ||
+                    currentArticle.cover ||
+                    currentArticle.gambar,
+                ) || "/placeholder-news.svg"
               }
               alt={currentArticle.title}
               className="featured-image"

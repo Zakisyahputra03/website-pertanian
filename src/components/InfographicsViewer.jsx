@@ -37,7 +37,6 @@ const InfographicsViewer = () => {
         setInfografisItems(list);
       } catch (err) {
         setError(err.message || "Gagal memuat infografis");
-        console.error("Error fetching infografis:", err);
       } finally {
         setLoading(false);
       }
@@ -91,11 +90,13 @@ const InfographicsViewer = () => {
                         <div className="item-image">
                           {item.gambar ? (
                             <img
-                              src={`https://api-web.sumbarprov.go.id${item.gambar}`}
+                              src={
+                                ApiService.resolveMediaUrl(item.gambar) ||
+                                "/placeholder-news.svg"
+                              }
                               alt={item.title}
                               onError={(e) => {
-                                e.target.src =
-                                  "https://via.placeholder.com/300x200?text=Infografis";
+                                e.target.src = "/placeholder-news.svg";
                               }}
                             />
                           ) : (

@@ -1,12 +1,12 @@
 // API Configuration and Services for Dinas Perkebunan Website
 
 // Base URLs - URL absolut untuk production di manage.sumbarprov.go.id
-export const API_BASE_URL = import.meta.env.DEV 
-  ? "/api" 
+export const API_BASE_URL = import.meta.env.DEV
+  ? "/api"
   : "https://api-web.sumbarprov.go.id/api";
 
-export const PPID_BASE_URL = import.meta.env.DEV 
-  ? "/ppid" 
+export const PPID_BASE_URL = import.meta.env.DEV
+  ? "/ppid"
   : "https://ppid.sumbarprov.go.id/api";
 
 // Kode Instansi untuk Dinas Perkebunan
@@ -76,7 +76,6 @@ export class ApiService {
 
       return await response.json();
     } catch (error) {
-      console.error("API Error:", error);
       throw error;
     }
   }
@@ -94,6 +93,42 @@ export class ApiService {
   static normalizeObject(data) {
     if (data == null) return null;
     return data.data ?? data.result ?? data.item ?? data.detail ?? data;
+  }
+
+  static resolveMediaUrl(raw) {
+    if (!raw) return null;
+    const value = String(raw).trim();
+    if (!value) return null;
+
+    const remoteHost = "https://api-web.sumbarprov.go.id";
+    const normalizedValue = value.startsWith("/") ? value : `/${value}`;
+
+    if (
+      normalizedValue.startsWith("http://") ||
+      normalizedValue.startsWith("https://")
+    ) {
+      return normalizedValue;
+    }
+
+    if (normalizedValue.startsWith("//")) {
+      return `https:${normalizedValue}`;
+    }
+
+    if (normalizedValue.startsWith("/files")) {
+      return import.meta.env.DEV
+        ? `/api${normalizedValue}`
+        : `${remoteHost}${normalizedValue}`;
+    }
+
+    if (normalizedValue.startsWith("/api")) {
+      return `${API_BASE_URL}${normalizedValue.replace(/^\/api/, "")}`;
+    }
+
+    if (normalizedValue.startsWith("/")) {
+      return `${API_BASE_URL}${normalizedValue}`;
+    }
+
+    return `${API_BASE_URL}/${normalizedValue}`;
   }
 
   static buildQueryUrl(url, params = {}) {
@@ -142,7 +177,11 @@ export class ApiService {
   }
 
   static async getDownloadData() {
-    return this.getCategory("download");
+    try {
+      return await this.getCategory("download");
+    } catch {
+      return [];
+    }
   }
 
   static async getInfografis() {
@@ -150,7 +189,7 @@ export class ApiService {
   }
 
   static async getLaporanKinerja() {
-    return this.getCategory("laporan-kinerja-instansi-pemerintah");
+    return [];
   }
 
   static async getPerjanjianKinerja() {
@@ -229,22 +268,57 @@ export class ApiService {
     return this.fetchData(url);
   }
 
+  static buildCategoryUrls(categorySlug) {
+    const urls = [];
+    const apiPath = (path) => `${API_BASE_URL}/${path}`;
+    const queryInstansi = `?instansi=${KODE_INSTANSI}`;
+    const noCategoryPrefix = [
+      "berita-utama",
+      "pengumuman",
+      "galery-foto",
+      "galery-video",
+    ];
+
+    if (noCategoryPrefix.includes(categorySlug)) {
+      urls.push(apiPath(`${categorySlug}/${KODE_INSTANSI}`));
+      urls.push(apiPath(`${categorySlug}${queryInstansi}`));
+      urls.push(apiPath(`${categorySlug}`));
+      return urls;
+    }
+
+    const categoryFirst = ["infografis", "sop"];
+    if (categoryFirst.includes(categorySlug)) {
+      urls.push(apiPath(`category/${categorySlug}`));
+      urls.push(apiPath(`${categorySlug}`));
+    }
+
+    urls.push(apiPath(`category/${categorySlug}`));
+    urls.push(apiPath(`category/${categorySlug}${queryInstansi}`));
+    urls.push(apiPath(`category/${categorySlug}/${KODE_INSTANSI}`));
+    urls.push(apiPath(`${categorySlug}`));
+    urls.push(apiPath(`${categorySlug}${queryInstansi}`));
+
+    return [...new Set(urls)];
+  }
+
   // Generic method for custom categories
   static async getCategory(categorySlug) {
-    // Slugs khusus yang tidak pakai /category/ prefix
-    const noCategoryPrefix = ["berita-utama", "pengumuman", "galery-foto", "galery-video"];
-    if (noCategoryPrefix.includes(categorySlug)) {
-      return this.fetchData(`${API_BASE_URL}/${categorySlug}/${KODE_INSTANSI}`);
+    if (categorySlug === "laporan-kinerja-instansi-pemerintah") {
+      return [];
     }
-    // Semua kategori lain pakai /category/ prefix sesuai API
-    const urlCategory = `${API_BASE_URL}/category/${categorySlug}/${KODE_INSTANSI}`;
-    try {
-      return await this.fetchData(urlCategory);
-    } catch (err) {
-      // Fallback ke path tanpa /category/ jika gagal
-      const urlDirect = `${API_BASE_URL}/${categorySlug}/${KODE_INSTANSI}`;
-      return this.fetchData(urlDirect);
+
+    const urls = this.buildCategoryUrls(categorySlug);
+    let lastError = null;
+
+    for (const url of urls) {
+      try {
+        return await this.fetchData(url);
+      } catch (err) {
+        lastError = err;
+      }
     }
+
+    throw lastError || new Error(`Unable to fetch category: ${categorySlug}`);
   }
 }
 
