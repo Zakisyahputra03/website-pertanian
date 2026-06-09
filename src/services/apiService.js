@@ -95,40 +95,53 @@ export class ApiService {
     return data.data ?? data.result ?? data.item ?? data.detail ?? data;
   }
 
-  static resolveMediaUrl(raw) {
+  static resolveUrl(raw) {
     if (!raw) return null;
-    const value = String(raw).trim();
-    if (!value) return null;
+    const s = String(raw).trim();
+    if (!s) return null;
+    if (s.startsWith("http://") || s.startsWith("https://")) return s;
+    if (s.startsWith("//")) return `https:${s}`;
+    if (s.startsWith("/")) return `https://api-web.sumbarprov.go.id${s}`;
+    return `https://api-web.sumbarprov.go.id/${s}`;
+  }
 
-    const remoteHost = "https://api-web.sumbarprov.go.id";
-    const normalizedValue = value.startsWith("/") ? value : `/${value}`;
+  // Alias untuk kompatibilitas
+  static resolveMediaUrl(raw) {
+    return this.resolveUrl(raw);
+  }
 
-    if (
-      normalizedValue.startsWith("http://") ||
-      normalizedValue.startsWith("https://")
-    ) {
-      return normalizedValue;
-    }
+  static parseYoutubeId(url) {
+    if (!url) return null;
+    const match = url.match(
+      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/
+    );
+    return match ? match[1] : null;
+  }
 
-    if (normalizedValue.startsWith("//")) {
-      return `https:${normalizedValue}`;
-    }
+  static calculateReadTime(content) {
+    if (!content) return "5 menit";
+    const words = content.replace(/<[^>]*>/g, "").split(/\s+/).length;
+    const minutes = Math.max(1, Math.ceil(words / 200));
+    return `${minutes} menit`;
+  }
 
-    if (normalizedValue.startsWith("/files")) {
-      return import.meta.env.DEV
-        ? `/api${normalizedValue}`
-        : `${remoteHost}${normalizedValue}`;
-    }
+  static normalizeBerita(item, index) {
+    if (!item) return null;
+    const image = this.resolveUrl(item.gambar || item.image || item.thumbnail || item.foto);
+    const content = item.isi || item.content || item.description || item.deskripsi || "";
 
-    if (normalizedValue.startsWith("/api")) {
-      return `${API_BASE_URL}${normalizedValue.replace(/^\/api/, "")}`;
-    }
-
-    if (normalizedValue.startsWith("/")) {
-      return `${API_BASE_URL}${normalizedValue}`;
-    }
-
-    return `${API_BASE_URL}/${normalizedValue}`;
+    return {
+      id: item.id || item.slug || String(index),
+      slug: item.slug || "",
+      title: item.title || item.judul || "Berita Tanpa Judul",
+      date: item.date || item.tanggal || item.created_at || "Tanggal tidak tersedia",
+      tag: item.category || item.kategori || item.tag || "BERITA UTAMA",
+      image: image || "/placeholder-news.svg",
+      readTime: item.readTime || item.waktu_baca || this.calculateReadTime(content),
+      views: item.hits || item.views || 0,
+      content: content,
+      author: item.created_by || item.penulis || item.author || "Redaksi"
+    };
   }
 
   static buildQueryUrl(url, params = {}) {
@@ -136,6 +149,7 @@ export class ApiService {
     const queryString = queryParams.toString();
     return queryString ? `${url}?${queryString}` : url;
   }
+
 
   // Pages API Methods
   static async getVisiMisi() {

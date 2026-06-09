@@ -28,7 +28,9 @@ const BeritaPage = () => {
       try {
         setLoading(true);
         const result = await ApiService.getBeritaUtama();
-        setBeritaData(ApiService.normalizeList(result));
+        const list = ApiService.normalizeList(result);
+        const normalized = list.map((item, index) => ApiService.normalizeBerita(item, index));
+        setBeritaData(normalized);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -63,10 +65,10 @@ const BeritaPage = () => {
     (item) =>
       (item.title &&
         item.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (item.description &&
-        item.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (item.category &&
-        item.category.toLowerCase().includes(searchQuery.toLowerCase())),
+      (item.content &&
+        item.content.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (item.tag &&
+        item.tag.toLowerCase().includes(searchQuery.toLowerCase())),
   );
 
   // Pagination Calculation
@@ -131,69 +133,37 @@ const BeritaPage = () => {
         </header>
 
         <div className="neat-news-list">
-          {currentItems.map((item, index) => (
-            <article key={item.id || index} className="neat-news-item">
+          {currentItems.map((item) => (
+            <article key={item.id} className="neat-news-item">
               <div className="neat-item-img">
-                <Link to={`/berita/${item.id || index}`}>
+                <Link to={`/berita/${item.id}`}>
                   <img
-                    src={
-                      ApiService.resolveMediaUrl(
-                        item.image ||
-                          item.thumbnail ||
-                          item.foto ||
-                          item.cover ||
-                          item.gambar,
-                      ) || "/placeholder-news.svg"
-                    }
-                    alt={item.title || item.judul}
+                    src={item.image}
+                    alt={item.title}
                   />
                 </Link>
                 <span className="neat-tag">
-                  {item.category || item.kategori || item.tag || "Berita"}
+                  {item.tag}
                 </span>
               </div>
               <div className="neat-item-content">
                 <div className="neat-meta">
-                  <span>
-                    {item.date ||
-                      item.tanggal ||
-                      item.created_at ||
-                      "Tanggal tidak tersedia"}
-                  </span>
+                  <span>{item.date}</span>
                   <span className="dot"></span>
-                  <span>
-                    {item.penulis || item.author || item.writer || "Redaksi"}
-                  </span>
+                  <span>{item.author}</span>
                   <span className="dot"></span>
-                  <span>
-                    {item.readTime ||
-                      item.waktu_baca ||
-                      item.duration ||
-                      "5 menit"}{" "}
-                    Baca
-                  </span>
+                  <span>{item.readTime} Baca</span>
                 </div>
                 <h2>
-                  <Link to={`/berita/${item.id || index}`}>
-                    {item.title || item.judul}
+                  <Link to={`/berita/${item.id}`}>
+                    {item.title}
                   </Link>
                 </h2>
-                {item.subtitle || item.subjudul || item.summary ? (
-                  <p className="neat-news-subtitle">
-                    {item.subtitle || item.subjudul || item.summary}
-                  </p>
-                ) : null}
                 <p>
-                  {item.excerpt ||
-                    item.summary ||
-                    item.description ||
-                    item.deskripsi ||
-                    (item.content
-                      ? item.content.substring(0, 150) + "..."
-                      : "")}
+                  {item.content.replace(/<[^>]*>/g, "").substring(0, 180)}...
                 </p>
                 <Link
-                  to={`/berita/${item.id || index}`}
+                  to={`/berita/${item.id}`}
                   className="neat-more-link"
                 >
                   Baca Selengkapnya <ArrowRight size={16} />
@@ -232,5 +202,6 @@ const BeritaPage = () => {
     </div>
   );
 };
+
 
 export default BeritaPage;

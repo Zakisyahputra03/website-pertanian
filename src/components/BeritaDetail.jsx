@@ -29,9 +29,15 @@ const BeritaDetail = () => {
         setLoading(true);
         const result = await ApiService.getBeritaUtama();
         const items = ApiService.normalizeList(result);
-        const selected = items.find((item) => String(item.id) === String(id));
-        setArticle(selected || items[0] || null);
-        if (!selected && items.length === 0) {
+        const normalized = items.map((item, index) => ApiService.normalizeBerita(item, index));
+        const selected = normalized.find(
+          (item, index) =>
+            String(item.id) === String(id) ||
+            String(item.slug) === String(id) ||
+            String(index) === String(id)
+        );
+        setArticle(selected || normalized[0] || null);
+        if (!selected && normalized.length === 0) {
           setError("Berita tidak ditemukan.");
         }
       } catch (err) {
@@ -82,6 +88,7 @@ const BeritaDetail = () => {
     tag: "Berita",
     image: "/placeholder-news.svg",
     content: "",
+    author: "Redaksi"
   };
 
   return (
@@ -125,8 +132,8 @@ const BeritaDetail = () => {
               <div className="meta-item">
                 <User size={16} />
                 <span>
-                  {currentArticle.penulis ||
-                    currentArticle.author ||
+                  {currentArticle.author ||
+                    currentArticle.penulis ||
                     "Admin OPD"}
                 </span>
               </div>

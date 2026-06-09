@@ -164,3 +164,92 @@
         gap: 1.5rem;
     }
 }
+
+/* Skeleton Loading Shimmer for Berita Terkini */
+.skeleton-card {
+    background: #ffffff;
+    border-radius: 24px;
+    height: 460px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.skeleton-img-wrap {
+    height: 300px;
+    background: #e2e8f0;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+}
+
+.skeleton-info {
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.skeleton-meta {
+    height: 14px;
+    width: 60%;
+    background: #e2e8f0;
+    border-radius: 4px;
+}
+
+.skeleton-title {
+    height: 24px;
+    width: 90%;
+    background: #e2e8f0;
+    border-radius: 4px;
+}
+
+.skeleton-title-short {
+    height: 24px;
+    width: 50%;
+    background: #e2e8f0;
+    border-radius: 4px;
+}
+
+/* Shimmer animation keyframes and overlay */
+.skeleton-card::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 20%,
+        rgba(255, 255, 255, 0.6) 60%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: shimmer 1.8s infinite;
+    content: '';
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.error-container-premium,
+.empty-container-premium {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    color: var(--text-light);
+    font-weight: 500;
+    text-align: center;
+    width: 100%;
+}
