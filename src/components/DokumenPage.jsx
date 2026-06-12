@@ -82,12 +82,8 @@ const DokumenPage = () => {
         const result = await ApiService.getDownloadData();
         const resolveUrl = (raw) => {
           if (!raw) return null;
-          const s = String(raw).trim();
-          if (!s) return null;
-          if (s.startsWith("http://") || s.startsWith("https://")) return s;
-          if (s.startsWith("//")) return `https:${s}`;
-          if (s.startsWith("/")) return `https://api-web.sumbarprov.go.id${s}`;
-          return `https://api-web.sumbarprov.go.id/${s}`;
+          const resolved = ApiService.resolveMediaUrl(raw);
+          return resolved || null;
         };
 
         const list = ApiService.normalizeList(result).map((item, index) => ({
@@ -121,7 +117,6 @@ const DokumenPage = () => {
         setDocs(list.length > 0 ? list : allDocs);
       } catch (err) {
         setError(err.message);
-        console.error("Error fetching dokumen:", err);
         setDocs(allDocs);
       } finally {
         setLoading(false);

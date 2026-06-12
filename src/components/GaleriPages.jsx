@@ -114,11 +114,7 @@ export const FotoActivities = () => {
             item.foto ||
             item.gambar ||
             null;
-          // Gabungkan dengan base URL jika path relatif
-          const fullUrl =
-            rawUrl && rawUrl.startsWith("/")
-              ? `https://api-web.sumbarprov.go.id${rawUrl}`
-              : rawUrl;
+          const fullUrl = ApiService.resolveMediaUrl(rawUrl) || rawUrl;
           return {
             id: item.id || item.slug || index + 1,
             url: fullUrl,
